@@ -1,0 +1,42 @@
+import mongoose from "mongoose";
+
+const PostSchema=new mongoose.Schema({
+    author:{
+        type:String,
+        required:true,
+    },
+    subreddit:{
+        type:String,
+        unique:true,    
+    },
+    title:{
+        type:String,
+        
+    },
+    desc:{
+        type:String,
+        required:true
+    }, 
+    image:{
+        type:String,
+    },
+    link:{
+        type:String,
+    },
+    votes:{
+        type:Number,
+        default:0
+    },
+    rootID:{
+        type:mongoose.Schema.Types.ObjectId,
+    },
+    parentID:{
+        type:mongoose.Schema.Types.ObjectId,
+    }
+    
+    
+    
+},{timestamps:true});
+
+const Post =mongoose.model('Post',PostSchema);
+export default Post;
