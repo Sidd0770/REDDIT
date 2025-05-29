@@ -29,8 +29,7 @@ const AuthorSignup = (props) => {
     .then(dispatch(setLogin(true)))
     .then(dispatch(setUsername(username)))
     .then(dispatch(setEmail(email)))
-    
-    
+      
   }
     return (
       <div className='w-screen h-screen z-20 flex items-center justify-center absolute top-0 left-0' style={{backgroundColor: 'rgba(0,0,0,0.6)'}}>

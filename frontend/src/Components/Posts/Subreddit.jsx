@@ -1,4 +1,4 @@
-import React ,{ useState}from 'react';
+import React ,{ useState,useEffect}from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPlus, faBars} from '@fortawesome/free-solid-svg-icons';
 import PostListing from './PostListing';
@@ -6,12 +6,13 @@ import { useNavigate} from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {joinSubreddit} from '../../services/operations/subredditAPI';
+import {checkMember} from '../../services/operations/subredditAPI';
 
 
 const Subreddit = () => {
   const {subreddit}=useParams();
-  const userId=useSelector((state)=>state.user._id);
-
+  
+  console.log(subreddit)
   const [join,setJoin]=useState(false);
 
   const link =`/r/${subreddit}`;
@@ -22,11 +23,28 @@ const Subreddit = () => {
   }
 
   //take subreddit name from the url 
+  const userId=useSelector(state=>state.userId);
+  console.log("UserId",userId);
+
+  useEffect(()=>{
+
+      checkMember(userId,subreddit)
+      .then((data)=>{
+        console.log("Check Member Data",data);
+        if(data ===true){
+          setJoin(true);
+        }
+
+      })
+  }, [userId, subreddit]
+  )
+
   const Join =(subreddit,userId)=>{
-      joinSubreddit({id:userId,subreddit:subreddit})
+    console.log("Joining Subreddit",subreddit,userId);
+      joinSubreddit(userId,subreddit)
       .then(()=>{
         console.log("Joined Subreddit Successfully");
-        setJoin(!join);
+        setJoin(true);
       })
   }
   

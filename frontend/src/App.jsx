@@ -19,6 +19,7 @@ import {GetDataFromCookie} from './services/operations/authAPI'
 import { setUser,setLogin,setUserId} from './services/Slices/loginSlice'
 import Subreddit from './Components/Posts/Subreddit'
 import ProfilePage from './Components/UserProfile/ProfilePage'
+import CustomFeeds from './Components/NavigationPanel/CustomFeeds'
 
 function App() {
   const [login,setlogin]=useState(false);
@@ -30,7 +31,7 @@ function App() {
       .then((data)=>{
         console.log(data);
         dispatch(setUser(data.username));
-        dispatch(setUserId(data._id));
+        dispatch(setUserId(data.id));
         dispatch(setLogin(true));
       })
       .catch((error)=>{
@@ -81,7 +82,7 @@ function App() {
             <Route path="/r/:subreddit" element={<Subreddit/>}/>
             <Route path="/search/:keyword" element={<SearchPage/>}/>
             <Route path="/profile/:username" element={<ProfilePage/>}/>
-            
+            <Route path="/feed/:username" element={<CustomFeeds/>}/>
           </Routes>
         </div>
 

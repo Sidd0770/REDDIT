@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Subreddit from '../Models/Subreddit.js';
 import Profile from '../Models/Profile.js';
 
@@ -39,12 +40,15 @@ export const joinSubreddit =async (req,res)=>{
     try{
         const {id,subreddit}=req.body;
         
-        await Subreddit.findByIdAndUpdate(
+        await Subreddit.findOneAndUpdate(
             {name:subreddit},
             {
-                $addToSet:{members:id}
+                $addToSet:{
+                    members:id
+                }
             }
         )
+  
         res.status(200).json({
             success:true,
             message:"Joined Subreddit Successfully"
@@ -55,6 +59,52 @@ export const joinSubreddit =async (req,res)=>{
             success:false,
             error:error.message,
             message:"Error while joining subreddit"
+        })
+    }
+}
+
+export const checkMember =async (req,res)=>{
+    try{
+        const {id,subreddit}=req.query;
+        console.log("id",id);
+        console.log("subreddit",subreddit);
+
+        const foundSubreddit=await Subreddit.findOne(
+            {name:subreddit},
+            {members:1}
+        );
+
+        const userObjectId =new mongoose.Types.ObjectId(id);
+        
+        const isMember =foundSubreddit.members && Array.isArray(foundSubreddit.members)
+                        ? foundSubreddit.members.some(member => member.equals(userObjectId))
+                        : false;
+
+        //update the subjoinde section of the user in profile Schema
+        if(isMember){
+            console.log("User is a member of the subreddit");
+            await Profile.findOneAndUpdate(
+                {userID:id},
+                {
+                    $addToSet:{
+                        subJoined:subreddit
+                    }
+                }
+            )
+        }               
+                           
+
+        res.status(200).json({
+            sucess:true,
+            isMember:isMember,
+            message:isMember ? "User is a member of the subreddit" : "User is not a member of the subreddit"
+        })
+
+    }catch(e){
+        res.status(500).json({
+            success:false,
+            error:e.message,
+            message:"Error while checking member"
         })
     }
 }

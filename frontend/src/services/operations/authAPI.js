@@ -54,8 +54,6 @@ export const Login =async(username,password)=>{
         const response=await axios.post(LOGIN_API,data,{
             withCredentials:true,
         });
-        console.log("the data required")
-        console.log(response.data.user);
 
         return response.data.user;
 
@@ -69,7 +67,6 @@ export const GetDataFromCookie=async()=>{
         const response =await axios.get(INIT_LOGIN_API,{
             withCredentials:true,
         });
-        console.log("cookieDATA",response.data.user);
         return response.data.user;
 
 

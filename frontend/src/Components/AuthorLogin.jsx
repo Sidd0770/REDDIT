@@ -7,7 +7,6 @@ import { setLogin,setUser ,setUserId} from '../services/Slices/loginSlice';
 const AuthorLogin = (props) => {
   const dispatch=useDispatch();
 
-  
   const [password,setPassword]=useState('');
   const [username,setUsername]=useState('');
 
@@ -34,8 +33,6 @@ const AuthorLogin = (props) => {
           dispatch(setLogin(true))
       })
   
-
-      
   }
 
   return (

@@ -11,10 +11,12 @@ const profileSchema=new mongoose.Schema({
     },
     subJoined:{
         type:[String],
+        ref:'Subreddit',
         default:[]
     },
     subCreated:{
-        type:[String],
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:'Subreddit',
         default:[]
     },
     postsCreated:{
@@ -24,7 +26,7 @@ const profileSchema=new mongoose.Schema({
     },
     commentsCreated:{
         type:[mongoose.Schema.Types.ObjectId],
-        ref:'Comment',
+        ref:'Post',
         default:[]
     },
     votes:{

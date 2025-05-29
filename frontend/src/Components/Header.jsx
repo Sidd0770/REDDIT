@@ -16,7 +16,6 @@ const Header = ({setlogin}) => {
   const dispatch=useDispatch();
   const isLogin=useSelector(state=>state.isLogin);
   const person=useSelector(state=>state.user);
-  console.log(person);
 
   const link ='/';
   const navigate=useNavigate();
@@ -50,12 +49,7 @@ const Header = ({setlogin}) => {
   const loginpage = () => {
     setlogin(true);
   }
-  const logout=()=>{
-      dispatch(setLogin(false));
-      dispatch(setUser(''));
-  }
 
-  
   const userDropDownRef = useRef(null);
   useOutsideAlerter(userDropDownRef);
 
@@ -70,6 +64,24 @@ const Header = ({setlogin}) => {
       setSearch('');
     }
 
+  }
+
+  //this removes the user data from the REdux toolkit
+  const logout=()=>{  
+      console.log("Logging out");
+      dispatch(setLogin(false));
+      dispatch(setUser(''));
+  }
+  
+  //navigate to the user page
+  const UserPage=()=>{
+    console.log("Navigating to user page");
+    console.log(person);
+    if(person){
+      navigate(`/profile/${person}`,{state:{person:person}});
+    }else{
+      console.log("No user found");
+    }
   }
 
 
@@ -127,17 +139,23 @@ const Header = ({setlogin}) => {
             {
               userDropDownVisible &&
 
-            <div className='absolute right-0 border-1 bg-black border-gray-700 top-11 rounded-sm w-40'>
+            <div className='flex flex-col p-1 absolute right-0 border-1 bg-black border-gray-700 top-11 rounded-sm w-40'>
               {
                 isLogin &&
-                <div className='text-white'>
-                    {person}
+                <div onClick={()=>UserPage()}>
+                  <button className='text-white m-1 hover:cursor-pointer'
+                        
+                  >
+                      {person}
+                  </button>
                 </div>
+                
               }
               
-              <button onClick={logout} className="flex text-sm text-white hover:bg-gray-300 hover:text-amber-200 overflow-hidden p-1" >
-                <FontAwesomeIcon className="w-6 h-6 mr-1 items-center" icon={faRightToBracket}
-                   
+              <button className="flex justify-center text-sm hover:cursor-pointer text-white overflow-hidden p-1"
+                      onClick={()=>logout()}
+               >
+                <FontAwesomeIcon className="w-6 h-6 mr-1 items-center" icon={faRightToBracket}            
                  />
                 Log Out
               </button>

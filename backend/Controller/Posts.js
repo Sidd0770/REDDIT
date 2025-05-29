@@ -89,7 +89,6 @@ export const createPost =async(req,res)=>{
             {new: true, upsert: true}
         )
 
-
         //Update the subreddit with the post
         await Subreddit.findOneAndUpdate(
             {name:subreddit},

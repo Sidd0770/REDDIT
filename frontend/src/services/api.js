@@ -23,9 +23,11 @@ export const commentEndPoints={
 }
 export const profileEndpoints={
     GET_PROFILE:BASE_URL+"/profile/getProfile/",
+    USER_FEED:BASE_URL+"/profile/UserFeed"
     
 }
 export const subredditEndpoints={
     CREATE_SUBREDDIT:BASE_URL+"/subreddit/createSubreddit",
-    JOIN_SUBREDDIT:BASE_URL+"/subreddit//joinSubreddit"
+    JOIN_SUBREDDIT:BASE_URL+"/subreddit/joinSubreddit",
+    CHECK_MEMBER:BASE_URL+"/subreddit/checkMember",
 }

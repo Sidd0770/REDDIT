@@ -4,7 +4,7 @@ const AvtarUserName = (props) => {
     
   return (
     <div>
-        <div className="flex ">
+        <div className="flex h-[25vh]">
             {/* avatar link */}
 
             <div>
