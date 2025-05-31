@@ -139,7 +139,6 @@ export const UserFeed=async(req,res)=>{
             {username:username},
             {subJoined:1}
         )
-        console.log("SubredditJoined",SubredditJoined);
 
         //now get all the post of these subreddits according to the timestamp
         const posts =await Post.find({

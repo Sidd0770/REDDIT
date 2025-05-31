@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import {useParams} from 'react-router-dom'
-import { getPostById } from '../../services/operations/postsAPI';
+import { getPostById,increaseViewCount} from '../../services/operations/postsAPI';
 import { useState } from 'react';
 import Post from './Post';
 
@@ -19,6 +19,10 @@ const PostPage = () => {
           setError(true)
           setLoading(false)
         })
+        increaseViewCount(id);
+
+        //Increase the Post View Count
+
         
    },[])
    

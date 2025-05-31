@@ -5,7 +5,8 @@ const {
   GET_ALL_POSTS,
   GET_POST_BY_ID,
   CREATE_POST,
-  CHANGEVOTES
+  CHANGEVOTES,
+INCREASE_VIEW_COUNT
   
 }=postsEndpoints;
 
@@ -68,3 +69,15 @@ export const changeVotes=async(id,vote)=>{
     }
 }
 
+export const increaseViewCount=async(id)=>{
+    try{
+        const response =await axios.put(INCREASE_VIEW_COUNT+id,
+            {},
+            {withCredentials:true});
+        
+
+    }catch(error){
+        console.log("Error in increasing post view count",error);
+        throw error;
+    }
+}

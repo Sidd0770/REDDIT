@@ -29,6 +29,7 @@ const profileSchema=new mongoose.Schema({
         ref:'Post',
         default:[]
     },
+    
     votes:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:'Post',

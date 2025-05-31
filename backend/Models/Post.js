@@ -32,10 +32,17 @@ const PostSchema=new mongoose.Schema({
     },
     parentID:{
         type:mongoose.Schema.Types.ObjectId,
-    }
-    
-    
-    
+    },
+    view_count:{
+        type:Number,
+        default:0
+    },
+    viewedBy:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:'User',
+        default:[]
+    },
+  
 },{timestamps:true});
 
 const Post =mongoose.model('Post',PostSchema);

@@ -36,7 +36,6 @@ export const UserFeed=async(username)=>{
                 withCredentials:true,
             }
         );
-        console.log("response from user feed api",response.data.data);
         return response.data.data;
 
     }catch(error){

@@ -66,8 +66,6 @@ export const joinSubreddit =async (req,res)=>{
 export const checkMember =async (req,res)=>{
     try{
         const {id,subreddit}=req.query;
-        console.log("id",id);
-        console.log("subreddit",subreddit);
 
         const foundSubreddit=await Subreddit.findOne(
             {name:subreddit},

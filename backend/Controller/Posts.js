@@ -137,4 +137,68 @@ export const changeVotes =async(req,res)=>{
         })
     }
 }
+export const IncreasePostViewCount = async(req,res)=>{
+    try{
+        const id =req.params.id;
+        const userId=req.user? req.user.id : null;
+        console.log("this is req.user",req.user);
+        console.log("User ID",userId);
+
+        let updateQuery={};
+
+        // Check if userId is present in the request
+        const checkAlreadyViewed= await Post.findOne({
+            id:id,
+            viewedBy:{
+                $in:[userId]
+            }
+        });
+        
+        if(!checkAlreadyViewed){
+            if(userId){
+                console.log("User ID is present");
+                updateQuery={
+                    $inc:{
+                        view_count:1
+                    },
+                    $addToSet:{
+                        viewedBy:userId
+                    }
+                }
+            }else{
+                updateQuery={
+                    $inc:{
+                        view_count:1
+                    }
+                }
+            }
+
+            //here update the post to the view count 
+            const response =await Post.findByIdAndUpdate(
+                id,
+                updateQuery,
+                {new:true, upsert:true}
+            )
+        }else{
+            return res.status(401).json({
+                success:false,
+                message:"Post already viewed by the user"
+            })
+        }
+        
+
+        res.status(200).json({
+            success:true,
+            data:response,
+            message:"Post view count increased successfully"
+        })
+        
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error while increasing post view count"
+        })
+    }   
+}
 

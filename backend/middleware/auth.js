@@ -4,6 +4,12 @@ import User from '../Models/User.js';
 dotenv.config();
 
 export const verifyToken=async(req,res,next)=>{
+    console.log("\n--- VERIFY TOKEN MIDDLEWARE START ---");
+    console.log("Request URL:", req.originalUrl);
+    console.log("Request Method:", req.method);
+    console.log("Request Headers:", req.headers.authorization); // Check Authorization header specifically
+    console.log("Request Cookies:", req.cookies); // Check for 'token' cookie
+    console.log("Request Body (if applicable):", req.body.token); // Check for 'token' in body
     try {
         //Extracting the jwt from request cookies,body,header
         const token=req.cookies.token || req.body.token ||req.headers["authorization"];
@@ -19,7 +25,7 @@ export const verifyToken=async(req,res,next)=>{
         
         //verify the jwt token using the secret key 
         const decode = await jwt.verify(token,process.env.JWT_SECRET);
-        console.log(decode);
+        console.log("decoded ",decode);
         req.user=decode;
         next();
 

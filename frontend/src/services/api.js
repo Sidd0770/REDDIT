@@ -12,6 +12,7 @@ export const postsEndpoints = {
     GET_POST_BY_ID:BASE_URL+"/getpost/",
     CREATE_POST:BASE_URL+"/createPost",
     CHANGEVOTES:BASE_URL+"/changeVotes/",
+    INCREASE_VIEW_COUNT:BASE_URL+"/IncreasePostViewCount/"
 
 }
 
