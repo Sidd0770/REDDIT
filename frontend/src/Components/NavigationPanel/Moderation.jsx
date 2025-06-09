@@ -1,8 +1,11 @@
 import React from 'react'
+import {ButtonStyle} from './ButtonStyle.jsx';
 
 const Moderation = () => {
   return (
-    <div>Moderation</div>
+    <div className='border-b-2'>
+      <ButtonStyle name="Moderation" />    
+    </div>
   )
 }
 

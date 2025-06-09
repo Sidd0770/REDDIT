@@ -1,18 +1,18 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { UserFeed} from '../../services/operations/profileAPI.js';
+import { ButtonStyle } from './ButtonStyle.jsx';
 
 const Home = () => {
   const navigate =useNavigate();
   const username =useSelector(state=>state.user);
   console.log("username in home",username);
   
-
   const home=()=>{
     navigate(`/feed/${username}`);
-
+  }
+  const trending=()=>{
+    navigate('/Popular');
   }
 
   return (
@@ -22,7 +22,7 @@ const Home = () => {
           <ButtonStyle name="Home" fun={home}/>
         </div>
         <div>
-          <ButtonStyle name="Popular"/>
+          <ButtonStyle name="Popular" fun={trending}/>
         </div>
         <div>
           <ButtonStyle name="Explore"/>
@@ -32,18 +32,10 @@ const Home = () => {
         </div>
       </div>
 
-
-      
     </div>
   )
 }
 
-const ButtonStyle=({name,fun})=>{
-  return(
-    <div onClick={fun} className='text-black  p-2 hover:bg-[#2A3236] hover:text-white rounded-md pl-[4vw] onhover:bg-[#2A3236] cursor-pointer'>
-      {name}
-    </div>
-  );
-};
+
 
 export default Home

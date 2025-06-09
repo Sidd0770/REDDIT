@@ -12,7 +12,10 @@ export const postsEndpoints = {
     GET_POST_BY_ID:BASE_URL+"/getpost/",
     CREATE_POST:BASE_URL+"/createPost",
     CHANGEVOTES:BASE_URL+"/changeVotes/",
-    INCREASE_VIEW_COUNT:BASE_URL+"/IncreasePostViewCount/"
+    INCREASE_VIEW_COUNT:BASE_URL+"/IncreasePostViewCount/",
+    TRENDING_POSTS:BASE_URL+"/TrendingPosts",
+    DELETE_POST:BASE_URL+"/deletePost/",
+    
 
 }
 
@@ -24,11 +27,13 @@ export const commentEndPoints={
 }
 export const profileEndpoints={
     GET_PROFILE:BASE_URL+"/profile/getProfile/",
-    USER_FEED:BASE_URL+"/profile/UserFeed"
+    USER_FEED:BASE_URL+"/profile/UserFeed",
+    SUBREDDITS:BASE_URL+"/profile/getSubredditName"
     
 }
 export const subredditEndpoints={
     CREATE_SUBREDDIT:BASE_URL+"/subreddit/createSubreddit",
     JOIN_SUBREDDIT:BASE_URL+"/subreddit/joinSubreddit",
     CHECK_MEMBER:BASE_URL+"/subreddit/checkMember",
+    MOD_CONTROLS:BASE_URL+"/subreddit/ModControls"
 }

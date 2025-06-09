@@ -13,7 +13,7 @@ const PostListing = (props) => {
       console.log(response);
       setPosts(response);
     })
-  }, []);
+  }, [subreddit]);
 
   // console.log("posts",posts);
 

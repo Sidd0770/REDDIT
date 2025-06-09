@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Header = ({setlogin}) => {
   const [search,setSearch]=useState('');
-
+  const [loading,setLoading]=useState(false);
   // const handleOutsideClick=useOutsideAlerter();
   const dispatch=useDispatch();
   const isLogin=useSelector(state=>state.isLogin);
@@ -44,7 +44,6 @@ const Header = ({setlogin}) => {
       };
     }, [ref]);
   }
-
 
   const loginpage = () => {
     setlogin(true);
@@ -84,7 +83,6 @@ const Header = ({setlogin}) => {
     }
   }
 
-
   return (
     <div className='flex justify-between w-[99vw] p-3 relative'>
         <Link to={'/'} className='mx-4'>
@@ -111,7 +109,6 @@ const Header = ({setlogin}) => {
               isLogin ?(
                 <>
                   <button className='justify-end mx-4'><FontAwesomeIcon icon={faComment} /></button>
-
                   <button className='flex border-2 p-2 rounded-xl hover:bg-gray-300'>
                     <div className='items-center'>
                       <FontAwesomeIcon  icon={faPlus} />
@@ -122,46 +119,46 @@ const Header = ({setlogin}) => {
                   <button className='mx-4 flex items-center'>
                     <FontAwesomeIcon icon={faBell} />
                   </button>
+
+                  {/* username */}
+                  <button onClick={toggleUserDropDown} ref={userDropDownRef} className='w-7 h-7 rounded-full '>
+                    <div ><FontAwesomeIcon icon={faUser} /></div>
+                    {/* <img src={avatar} className='h-10 w-10 rounded-2xl'></img> */}
+                  </button>
+                  
+                  {/* user dropdown */}
+                  {
+                  userDropDownVisible &&
+                  <div ref={userDropDownRef} className='flex flex-col items-center justify-center p-1 absolute right-0 border-1 bg-black border-gray-700 top-11 rounded-xl w-35'>
+                    {
+                      <div >
+                        <button className='flex justify-center items-center text-white m-1 hover:cursor-pointer'
+                                onClick={()=>UserPage()}
+                        >
+                            {person}
+                        </button>
+                    <button className="flex justify-center text-sm hover:cursor-pointer text-white overflow-hidden p-1"
+                            onClick={()=>logout()}
+                      >
+                      <FontAwesomeIcon className="w-6 h-6 mr-1 items-center" icon={faRightToBracket}            
+                      />
+                      Log Out
+                    </button>
+                    </div>
+                    }
+                  </div>
+                  }
+                  
+
                 </>
-              ):(<>
+              ):
+              (<>
                   <Button onClick={loginpage} className=''>Login In</Button>
               </>)
               
             }
 
-            {/* username */}
-            <button onClick={toggleUserDropDown} ref={userDropDownRef} className='w-7 h-7 rounded-full '>
-              <div ><FontAwesomeIcon icon={faUser} /></div>
-              {/* <img src={avatar} className='h-10 w-10 rounded-2xl'></img> */}
-            </button>
             
-            {/* user dropdown */}
-            {
-              userDropDownVisible &&
-
-            <div className='flex flex-col p-1 absolute right-0 border-1 bg-black border-gray-700 top-11 rounded-sm w-40'>
-              {
-                isLogin &&
-                <div onClick={()=>UserPage()}>
-                  <button className='text-white m-1 hover:cursor-pointer'
-                        
-                  >
-                      {person}
-                  </button>
-                </div>
-                
-              }
-              
-              <button className="flex justify-center text-sm hover:cursor-pointer text-white overflow-hidden p-1"
-                      onClick={()=>logout()}
-               >
-                <FontAwesomeIcon className="w-6 h-6 mr-1 items-center" icon={faRightToBracket}            
-                 />
-                Log Out
-              </button>
-              
-            </div>
-            }
             
 
         </div>

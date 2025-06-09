@@ -6,7 +6,9 @@ const {
   GET_POST_BY_ID,
   CREATE_POST,
   CHANGEVOTES,
-INCREASE_VIEW_COUNT
+  TRENDING_POSTS,
+INCREASE_VIEW_COUNT,
+    DELETE_POST
   
 }=postsEndpoints;
 
@@ -74,10 +76,36 @@ export const increaseViewCount=async(id)=>{
         const response =await axios.put(INCREASE_VIEW_COUNT+id,
             {},
             {withCredentials:true});
-        
+        console.log("IncreaseViewsCount :",response)
 
     }catch(error){
         console.log("Error in increasing post view count",error);
+        throw error;
+    }
+}
+
+export const getTrendingPosts =async () =>{
+    try{
+        const response =await axios.get(TRENDING_POSTS,
+            {withCredentials:true})
+        return response.data.data;
+    }catch(error){
+        console.log("error in getting trending posts",error);
+        throw error;
+    }
+}
+
+export const deletePost =async(id)=>{
+    try{
+        
+        const response =await axios.put(DELETE_POST+id,null,{
+            
+            withCredentials:true
+        })
+        console.log("Post deleted successfully",response);
+        return response;
+    }catch(error){
+        console.log("Error in deleting post",error);
         throw error;
     }
 }

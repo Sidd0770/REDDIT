@@ -42,6 +42,11 @@ const PostSchema=new mongoose.Schema({
         ref:'User',
         default:[]
     },
+    lastViewedAt:{
+        type:Date,
+        default:null,
+        index:true
+    }
   
 },{timestamps:true});
 

@@ -164,6 +164,36 @@ export const UserFeed=async(req,res)=>{
     }
 }
 
+export const getSubredditName=async(req,res)=>{
+    try{
+        const username=req.user? req.user.username : null;
+
+        const subs= await Profile.findOne(
+            {username:username},
+            {subJoined:1}
+        );
+
+        if(!subs){
+            return res.status(401).json({
+                success: false,
+                message: "Profile not found."
+            });
+        }
+        res.status(200).json({
+            success: true,
+            data: subs.subJoined,
+            message: "Subreddit names fetched successfully."
+        })
+    }catch(error){
+        
+        res.status(500).json({
+            success: false,
+            error: 'Server error.',
+            details: error.message // Keep this for development, consider removing/logging in production
+        });
+    }
+}
+
 
 
 

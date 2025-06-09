@@ -4,7 +4,6 @@ import {faPlus, faBars} from '@fortawesome/free-solid-svg-icons';
 import PostListing from './PostListing';
 import { useNavigate} from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import {joinSubreddit} from '../../services/operations/subredditAPI';
 import {checkMember} from '../../services/operations/subredditAPI';
 
@@ -23,12 +22,11 @@ const Subreddit = () => {
   }
 
   //take subreddit name from the url 
-  const userId=useSelector(state=>state.userId);
-  console.log("UserId",userId);
+  
 
   useEffect(()=>{
-
-      checkMember(userId,subreddit)
+    
+      checkMember(subreddit)
       .then((data)=>{
         console.log("Check Member Data",data);
         if(data ===true){
@@ -36,12 +34,12 @@ const Subreddit = () => {
         }
 
       })
-  }, [userId, subreddit]
+  }, [subreddit]
   )
 
-  const Join =(subreddit,userId)=>{
-    console.log("Joining Subreddit",subreddit,userId);
-      joinSubreddit(userId,subreddit)
+  const Join =(subreddit)=>{
+    console.log("Joining Subreddit",subreddit);
+      joinSubreddit(subreddit)
       .then(()=>{
         console.log("Joined Subreddit Successfully");
         setJoin(true);
@@ -67,7 +65,7 @@ const Subreddit = () => {
                 </div >
 
                 <button className='mx-2 hover:scale-105 bg-blue-200 px-3 py-1 rounded-2xl hover:bg-blue-300'
-                  onClick={()=>Join(subreddit,userId)}
+                  onClick={()=>Join(subreddit)}
                   >
                   {join ? "Joined":"Join"}  
                   </button>

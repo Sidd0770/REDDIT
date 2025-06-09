@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp,faArrowDown,faComment} from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp,faArrowDown,faComment,faTrash} from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useSelector} from 'react-redux';
 import {changeVotes} from '../../services/operations/postsAPI';
 import AuthorLogin from '../AuthorLogin';
 import CommentListing from '../Comments/CommentListing';
 import CommentForm from '../Comments/CommentForm';
+import {deletePost} from '../../services/operations/postsAPI';
 
 const Post = (props) => {
   const loggedin=useSelector(state=>state.isLogin);
@@ -16,6 +17,9 @@ const Post = (props) => {
   const [voteCount,setVoteCount]=useState(vote);
   const [login,SetLogin]=useState(false);
   const type =props.type;
+  const mod=props.moderator;
+  const [desc,setDesc]=useState(props.desc);
+  console.log("moderation Post",mod);
   // const [open,setOpen]=useState(props.open);
   
   const changeVote=()=>{
@@ -26,6 +30,14 @@ const Post = (props) => {
         SetLogin(true);
     }
   }
+  const DELETE =()=>{  
+      deletePost(ID)
+      .then((res)=>{  
+        console.log('Post deleted successfully',res.data.desc)
+        setDesc(res.data.data.desc);
+      })
+  }
+
   const Upperbody=()=>{
     return(
       <div className=''>
@@ -37,10 +49,29 @@ const Post = (props) => {
               </div>
             )
             :
-            (<div>
-              {/* <h3 className='text-sm'> u/{props.subreddit}</h3> */}
-              <h5 className='text-sm'>Posted by u/{props.author}</h5>
-            </div>)
+            (
+              <div >
+                
+                <div className='flex justify-between items-center'>
+                  
+                  <div className='text-sm'>
+                    <h3 className='text-sm'> u/{props.subreddit}</h3>
+                    Posted by u/{props.author}
+
+                  </div>
+                  <h5>
+                      { mod 
+                          &&
+                        <button className='px-3 py-2 rounded-full hover:scale-[120%] hover:cursor-pointer ' 
+                        onClick={()=>{DELETE();}}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </button> 
+                      }
+                  </h5>
+                </div>
+                
+              </div>
+            )
           }
 
       </div>
@@ -88,7 +119,7 @@ const Post = (props) => {
 
           <h2 className='text-xl m-2'>{props.title}</h2>
           <div className='text-sm leading-6'>
-            <p>{props.desc}</p>
+            <p>{desc}</p>
           </div>
           
       </div>

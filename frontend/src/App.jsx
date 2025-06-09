@@ -20,6 +20,7 @@ import { setUser,setLogin,setUserId} from './services/Slices/loginSlice'
 import Subreddit from './Components/Posts/Subreddit'
 import ProfilePage from './Components/UserProfile/ProfilePage'
 import CustomFeeds from './Components/NavigationPanel/CustomFeeds'
+import Trending from './Components/NavigationPanel/Trending'
 
 function App() {
   const [login,setlogin]=useState(false);
@@ -83,6 +84,7 @@ function App() {
             <Route path="/search/:keyword" element={<SearchPage/>}/>
             <Route path="/profile/:username" element={<ProfilePage/>}/>
             <Route path="/feed/:username" element={<CustomFeeds/>}/>
+            <Route path="/Popular" element={<Trending/>}/>
           </Routes>
         </div>
 

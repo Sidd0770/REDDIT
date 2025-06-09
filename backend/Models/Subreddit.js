@@ -27,6 +27,11 @@ const subredditSchema= new mongoose.Schema({
         type:String,
         ref:'User',
         required:true
+    },
+    Moderators:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:'User',
+        default:[]
     }
 },
 {

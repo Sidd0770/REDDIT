@@ -28,8 +28,7 @@ const profileSchema=new mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         ref:'Post',
         default:[]
-    },
-    
+    }, 
     votes:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:'Post',
@@ -53,6 +52,7 @@ const profileSchema=new mongoose.Schema({
         ref:'User',
         default:[]
     },
+    
 
 })
 

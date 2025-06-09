@@ -4,7 +4,8 @@ import Profile from '../Models/Profile.js';
 
 export const createSubreddit =async (req,res)=>{
     try{
-        const {name,description,icon,createdBy}=req.body;
+        const {createdBy}=req.user ?req.user.username : null;
+        const {name,description,icon}=req.body;
         const newSubreddit =await Subreddit.create(
             { 
                 name,
@@ -38,7 +39,8 @@ export const createSubreddit =async (req,res)=>{
 
 export const joinSubreddit =async (req,res)=>{
     try{
-        const {id,subreddit}=req.body;
+        const {id}=req.user ?req.user.id:null;
+        const {subreddit}=req.body;
         
         await Subreddit.findOneAndUpdate(
             {name:subreddit},
@@ -48,7 +50,6 @@ export const joinSubreddit =async (req,res)=>{
                 }
             }
         )
-  
         res.status(200).json({
             success:true,
             message:"Joined Subreddit Successfully"
@@ -65,7 +66,9 @@ export const joinSubreddit =async (req,res)=>{
 
 export const checkMember =async (req,res)=>{
     try{
-        const {id,subreddit}=req.query;
+        const id=req.user? req.user.id : null;
+        
+        const {subreddit}=req.query;
 
         const foundSubreddit=await Subreddit.findOne(
             {name:subreddit},
@@ -90,8 +93,6 @@ export const checkMember =async (req,res)=>{
                 }
             )
         }               
-                           
-
         res.status(200).json({
             sucess:true,
             isMember:isMember,
@@ -103,6 +104,30 @@ export const checkMember =async (req,res)=>{
             success:false,
             error:e.message,
             message:"Error while checking member"
+        })
+    }
+}
+
+export const ModControls=async (req,res)=>{
+    try{
+        const id = req.user? req.user.id : null;
+        const {subreddit}=req.query;
+        const isModerator =await Subreddit.findOne({
+                name:subreddit,
+                Moderators:{
+                    $in:[id]
+                }}
+        )
+        res.status(200).json({
+            success:true,
+            isModerator:isModerator ? true : false,
+            message:isModerator ? "User is a moderator of the subreddit" : "User is not a moderator of the subreddit"
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error while checking moderator status"
         })
     }
 }

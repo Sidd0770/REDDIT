@@ -10,8 +10,6 @@ const Sidebar = () => {
     <div className=''>
          <Home/>
          <Moderation/>
-         <CustomFeeds/>
-         <Recent/>
          <Community/>
     </div>
   )

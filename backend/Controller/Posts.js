@@ -148,7 +148,7 @@ export const IncreasePostViewCount = async(req,res)=>{
 
         // Check if userId is present in the request
         const checkAlreadyViewed= await Post.findOne({
-            id:id,
+            _id:id,
             viewedBy:{
                 $in:[userId]
             }
@@ -163,6 +163,9 @@ export const IncreasePostViewCount = async(req,res)=>{
                     },
                     $addToSet:{
                         viewedBy:userId
+                    },
+                    $set:{
+                        lastViewedAt:new Date()
                     }
                 }
             }else{
@@ -179,6 +182,7 @@ export const IncreasePostViewCount = async(req,res)=>{
                 updateQuery,
                 {new:true, upsert:true}
             )
+            
         }else{
             return res.status(401).json({
                 success:false,
@@ -202,3 +206,96 @@ export const IncreasePostViewCount = async(req,res)=>{
     }   
 }
 
+export const getTrendingPosts=async(req,res)=>{
+    try{
+        const posts =await Post.aggregate([
+            {
+                //findin the time last viewed at or created at
+                $addFields:{
+                    effectiveActivityTime:{
+                        $cond:{
+                            if:{$ne:["$lastViewedAt",null]},
+                            then:"$lastViewedAt",
+                            else:"$createdAt"
+                        }
+                    },
+                    hoursSinceActivity:{
+                        $divide:[
+                            {$subtract:[new Date(),"$$ROOT.effectiveActivityTime"]},
+                            3600000
+                        ]
+                    }      
+                },
+                //calculate the trending score
+                $addFields:{
+                    normalizeHours:{
+                        $max:[1,"$hoursSinceActivity"]
+                    },
+                    trendingScore:{
+                        $subtract:[
+                            {$log10:{$add:[1,"$view_count"]}},
+                            {$divide:["$normalizeHours",24]}
+                        ]
+                    }
+                },
+            },
+            {
+                $sort: {
+                    trendingScore: -1
+                }
+            },
+            {
+                $limit: 10
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    content: 1,
+                    author: 1,
+                    view_count: 1,
+                    createdAt: 1,
+                    lastViewedAt: 1,
+                    subreddit: 1,
+                    trendingScore: 1,
+                    
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: posts
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Server error.',
+            details: error.message // Keep this for development, consider removing/logging in production
+        });
+    }
+}
+
+export const deletePost =async (req,res)=>{
+    try{
+        const {id} =req.params;
+        console.log("Post ID to delete",id);
+        const post = await Post.findByIdAndUpdate(
+            id,
+            {desc :"[DELETED]"},
+            
+        );
+        res.status(200).json({
+            success:true,
+            data:post,
+            message:"Post deleted successfully"
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error while deleting post"
+        })
+    }
+}
