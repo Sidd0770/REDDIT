@@ -4,7 +4,7 @@ import Profile from '../Models/Profile.js';
 
 export const createSubreddit =async (req,res)=>{
     try{
-        const {createdBy}=req.user ?req.user.username : null;
+        const createdBy=req.user ?req.user.username : null;
         const {name,description,icon}=req.body;
         const newSubreddit =await Subreddit.create(
             { 
@@ -39,7 +39,7 @@ export const createSubreddit =async (req,res)=>{
 
 export const joinSubreddit =async (req,res)=>{
     try{
-        const {id}=req.user ?req.user.id:null;
+        const id=req.user ?req.user.id:null;
         const {subreddit}=req.body;
         
         await Subreddit.findOneAndUpdate(

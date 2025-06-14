@@ -1,6 +1,8 @@
 import Post from "../Models/Post.js";
 import Profile from "../Models/Profile.js";
 import Subreddit from "../Models/Subreddit.js";
+import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import fs from "fs";
 
 export const getPosts = async (req, res) => {
     try {
@@ -39,14 +41,25 @@ export const getpostID = async (req, res) => {
 
 export const createPost =async(req,res)=>{
     try {
-        const {author,title,desc,image,votes,rootID,parentID,subreddit}=req.body;
+        const author=req.user ?req.user.username : null;
+        
+        const {title,desc,votes,subreddit}=req.body;
+
+        const rootID = (req.body.rootID === 'null' || !req.body.rootID) ? null : req.body.rootID;
+        const parentID = (req.body.parentID === 'null' || !req.body.parentID) ? null : req.body.parentID;
+        console.log(rootID,parentID);
+        console.log(req.body);
+        const imageUrl =req.cloudinaryUrl ? req.cloudinaryUrl : null;
+        console.log("Image URL",imageUrl);
+        const imagePublicid= req.cloudinaryPublicId ? req.cloudinaryPublicId : null;
 
         const newPost =await Post.create({
             author,
             title,
             subreddit,
+            image:imageUrl,
+            imagePublicid:imagePublicid,
             desc,
-            image,
             votes,
             rootID,
             parentID,
@@ -107,7 +120,7 @@ export const createPost =async(req,res)=>{
         });
     } 
     catch (error) {
-        console.log(error);
+        console.error("Error in createPost:", error);
         res.status(500).json({
             success:false,
             error:error.message,

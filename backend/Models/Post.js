@@ -7,7 +7,8 @@ const PostSchema=new mongoose.Schema({
     },
     subreddit:{
         type:String,
-        unique:true,    
+        unique:true,
+        required:true,    
     },
     title:{
         type:String,
@@ -18,6 +19,9 @@ const PostSchema=new mongoose.Schema({
         required:true
     }, 
     image:{
+        type:String,
+    },
+    imagePublicid:{
         type:String,
     },
     link:{

@@ -21,6 +21,7 @@ import Subreddit from './Components/Posts/Subreddit'
 import ProfilePage from './Components/UserProfile/ProfilePage'
 import CustomFeeds from './Components/NavigationPanel/CustomFeeds'
 import Trending from './Components/NavigationPanel/Trending'
+import Moredetails from './Components/UserProfile/Moredetails'
 
 function App() {
   const [login,setlogin]=useState(false);
@@ -59,15 +60,12 @@ function App() {
       }
 
       {/* LAYOUT OF THE MAIN MENU */}
-
       <div className='flex m-1 w-[100vw] '>
         
         {/* PANEL */}
         <div className=' w-[15rem] '>
           <Sidebar/>
         </div>
-        
-        
 
         {/* MAIN CONTENT */}
         <div className='w-[50rem]  m-1 border-l-1 border-r-1 p-5 border-white'>
@@ -89,8 +87,10 @@ function App() {
         </div>
 
         {/* RECENTLY VISITED SUBREDDITS   */}
-        <div className='mx-5 bg-amber-50 w-[17rem]'>
-          
+        <div className='mx-5 bg-amber-500 w-[17rem]'>
+          <Routes>
+              <Route path="/profile/:username" element={<Moredetails/>}/>
+          </Routes>
         </div>
         
       </div>

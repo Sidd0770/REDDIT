@@ -1,38 +1,41 @@
 import {v2 as cloudinary} from 'cloudinary';
-import {fs} from 'fs';
+import * as fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config();
 
 cloudinary.config({ 
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-        api_key:process.env.CLOUDINARY_API_KEY, 
-        api_secret:process.env.CLOUDINARY_API_SECRET
+        api_key:process.env.CLOUDINARY_CLOUD_API_KEY, 
+        api_secret:process.env.CLOUDINARY_CLOUD_API_SECRET
 });
 
-const uploadOnCloudinary =async(file)=>{
+export const uploadOnCloudinary =async(file)=>{
     try{
-        if(!file) return null;
-        const response=await cloudinary.uploadder.upload(
+        if(!file){
+            console.log("No local file path provided for Cloudinary upload");
+            return null;
+        }
+        const response=await cloudinary.uploader.upload(
             file,{
                 resource_type:'auto',
             })
         console.log("file is uploaded on cloudinary",response.url);
+
+        if(fs.existsSync(file)){
+            fs.unlinkSync(file);
+            console.log("file is removed from local storage");
+        }
         return response;
 
     }catch(error){
         //remove the file from local storage
-        fs.unlinkSync(file);
+        console.error("Cloudinary upload failed with error:", error); 
+        if(fs.existsSync(file)){
+            fs.unlinkSync(file);
+            console.log("file is removed from local storage 2222" );
+        }
         return null;
 
     }
 }
 
-
-
-const uploadResult = await cloudinary.uploader
-       .upload(
-           'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-               public_id: 'shoes',
-           }
-       )
-       .catch((error) => {
-           console.log(error);
-       });

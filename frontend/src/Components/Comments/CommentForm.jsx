@@ -2,40 +2,42 @@ import React,{useState} from 'react'
 import Button from '../Button.jsx'
 import { faImage,faGift,faA} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useSelector } from 'react-redux'
 import { createPost } from '../../services/operations/postsAPI.js'
 
 
 //props mei hoga postid and parentid and username so pass the post it to the backend api call 
 const CommentForm = (props) => {
-    const author=useSelector(state=>state.user);
     const [Text,setText]=useState('');
-    console.log(Text);
     const [image,setImage]=useState(null);
-    const [gif,setGif]=useState(null);
     const rootID=props.rootID;
     const parentID=props.parentID;
+    const subreddit=props.subreddit;
     const onSubmit=props.onSubmit;
-    console.log(parentID,rootID);
+    console.log(parentID,rootID,subreddit);
     
     const ResetValues=()=>{
         setText('');
         setImage(null);
-        setGif(null); 
+        
     }
 
     const handleSubmit=(e)=>{
         console.log(e);
         e.preventDefault();
-        const data={author:author,
-                    desc:Text,
-                    image:image,
-                    gif:gif,
-                    parentID:parentID,
-                    rootID:rootID
-                };
 
-        createPost(data)
+        const formData =new FormData();
+
+        formData.append('desc',Text);
+        formData.append('rootID',rootID);
+        formData.append('parentID',parentID);
+        formData.append('subreddit',subreddit);
+        if(image!=null){
+            formData.append('postImage',image);
+        }else{
+            formData.append('postImage',null);
+        }
+
+        createPost(formData)
         .then(res=>{
             console.log(res);
             ResetValues();
@@ -70,7 +72,7 @@ const CommentForm = (props) => {
                 <input
                     id="imageUpload" // Add an ID to the input
                     type="file"
-                    onChange={(e) => setImage(e.target.files)}
+                    onChange={(e) => setImage(e.target.files[0])}
                     className="hidden" // Hide the actual file input
                 />
 

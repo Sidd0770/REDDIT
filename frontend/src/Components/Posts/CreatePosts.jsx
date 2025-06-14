@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 import { createPost } from '../../services/operations/postsAPI';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 const CreatePosts = () => {
@@ -11,30 +10,43 @@ const CreatePosts = () => {
     const {Link}=location.state;
     console.log(Link);
     const navigate=useNavigate();
-
-    const author=useSelector((state)=>state.user);
-    console.log(author);
     const [type,setType]=useState('text');
     const [title,setTitle]=useState('');
     const [desc,setDesc]=useState("");
-    const [image,setImage]=useState("");
+    const [image,setImage]=useState(null);
     const [link,setLink]=useState("");
     const [subreddit,setSubreddit]=useState("");
-    
+    const handleImageChange = (e) => {
+        // e.target.files is a FileList, we want the first (and only) file
+        setImage(e.target.files[0]);
+    };
 
-    const SubmitForm=()=>{
-        createPost({author,title,subreddit,desc,image,link,rootID:null,parentID:null})
+    const SubmitForm=async()=>{
+        const formData=new FormData();
+        formData.append('title',title)
+        formData.append('subreddit',subreddit);
+        formData.append('desc',desc);
+        formData.append('link',link);
+        formData.append('rootID',null);
+        formData.append('parentID',null);
+        if(image!=null){
+            console.log("image is not null");
+            formData.append('postImage', image);
+        }else{
+            console.log("image is null");
+        }
+
+        createPost(formData)
         .then(()=>{
             setTitle("");
             setSubreddit("");
             setDesc("");
-            setImage("");
+            setImage(null);
             setLink("");
             navigate(Link);
         })
   
     }
-    
 
   return (
     //   <div className='w-screen h-screen z-10 flex items-center justify-center absolute top-0 left-0' style={{backgroundColor: 'rgba(0,0,0,0.6)'}}>
@@ -65,17 +77,16 @@ const CreatePosts = () => {
         </div>
         
         <div className='mx-6'>
-            
             {
                 type==='text' &&
                 <textarea placeholder='text' className='w-[50%]  p-2 border-2 border-black rounded-lg hover:border-green-300'
                         onChange={(e)=>setDesc(e.target.value)}
                 >
                 </textarea>
-            }
+            }   
             {
                 type==='image' &&
-                <input type='file' placeholder='image and videos ' onChange={(e)=>setImage(e.target.value)} className='w-[50%] text-white  p-2 border-2 border-black rounded-lg hover:border-green-300'
+                <input type='file' name="postImage" placeholder='image and videos ' onChange={handleImageChange} className='w-[50%] text-white  p-2 border-2 border-black rounded-lg hover:border-green-300'
                 />
             }
             {

@@ -19,10 +19,8 @@ const PostPage = () => {
         getPostById(id).then((data)=>{
           const response = data.data.data;
           setpostData(response)
-          console.log(response);
 
-          ModControls(response.subreddit).then((res)=>{
-            console.log("Mod Controls Response",res);      
+          ModControls(response.subreddit).then((res)=>{    
             if(res){
               setMod(true);
             }

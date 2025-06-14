@@ -4,6 +4,7 @@ import Post from "../Models/Post.js";
 export const getComments=async(req,res)=>{
     try{
         const id =req.params.postID;
+        console.log("Post ID:", id);
         const commments=await Post.find({
             rootID:id,           
         });

@@ -42,11 +42,10 @@ export const createPost=async(data)=>{
             {withCredentials:true});
         
         console.log("Post Data ",response.data);
-
-        
+ 
     }catch(error){
         console.log("Post Creation Failed ",error);
-        
+        throw error;
     }
 }
 

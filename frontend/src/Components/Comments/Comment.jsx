@@ -11,6 +11,7 @@ const Comment = (props) => {
     const rootID=props.rootID;   //this is rootID of the comment
     const ID=props._id;          //this is ID of the comment
     const vote = props.votes;
+    console.log("props in comment",props);
     const loggedin=useSelector(state=>state.isLogin);
     const [login,SetLogin]=useState(false);           //person commenting without login
     const [voteCount, setVoteCount] = useState(vote); //counts the votes of the comment  

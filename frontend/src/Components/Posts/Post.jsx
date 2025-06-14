@@ -19,7 +19,6 @@ const Post = (props) => {
   const type =props.type;
   const mod=props.moderator;
   const [desc,setDesc]=useState(props.desc);
-  console.log("moderation Post",mod);
   // const [open,setOpen]=useState(props.open);
   
   const changeVote=()=>{
@@ -33,7 +32,7 @@ const Post = (props) => {
   const DELETE =()=>{  
       deletePost(ID)
       .then((res)=>{  
-        console.log('Post deleted successfully',res.data.desc)
+      
         setDesc(res.data.data.desc);
       })
   }
@@ -53,7 +52,6 @@ const Post = (props) => {
               <div >
                 
                 <div className='flex justify-between items-center'>
-                  
                   <div className='text-sm'>
                     <h3 className='text-sm'> u/{props.subreddit}</h3>
                     Posted by u/{props.author}
@@ -121,10 +119,15 @@ const Post = (props) => {
           <div className='text-sm leading-6'>
             <p>{desc}</p>
           </div>
+          {
+            props.image &&
+              <div className="my-2">
+                  <img src={props.image} className="w-full h-full rounded-lg" />
+              </div>
+          }
           
       </div>
-    )
-      
+    )     
   }
   const postclasses="block p-2 rounded-lg hover:bg-gray-100 " + (props.open ?"":"cursor-pointer") ;
   return (
@@ -136,8 +139,8 @@ const Post = (props) => {
                 <Upperbody/>
                 <PostStructure/>
                 <Lowerbody/>
-                <CommentForm rootID={ID} parentID={ID} />
-                <CommentListing rootID={ID} parentID={ID}/>
+                <CommentForm rootID={ID} parentID={ID} subreddit={props.subreddit}/>
+                <CommentListing rootID={ID} parentID={ID} subreddit={props.subreddit}/>
               </div>
           ):
           (
@@ -154,6 +157,5 @@ const Post = (props) => {
     </div>
   )
 }
-
 
 export default Post

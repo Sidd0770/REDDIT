@@ -14,12 +14,17 @@ const {
 
 export const getComments=async(rootID,parentID)=>{
     try{
+        console.log("Root ID:", rootID);
+        console.log("Parent ID:", parentID);
+        console.log(GET_COMMENTS+rootID);
         const response=await axios.get(GET_COMMENTS+rootID);
+        console.log("response from get comments api",response);
         const allcomments=response.data.data;
         // Filter the comments based on parentID
         const filteredComments =allcomments.filter(
             (comment)=> comment.parentID===parentID
         );
+        console.log("Filtered Comments",filteredComments);
         return filteredComments;
 
     }
@@ -30,7 +35,6 @@ export const getComments=async(rootID,parentID)=>{
 
 export const searchComments=async(text)=>{
     try{
-        
         const response=await axios.get(SEARCH_COMMENTS,{
             params:{
                 search:text,
