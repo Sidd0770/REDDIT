@@ -3,9 +3,7 @@ import { useState } from 'react'
 import Header from './Components/header'
 import AuthorLogin from './Components/AuthorLogin'
 import AuthorSignup from './Components/AuthorSignup'
-// import Banner from './Components/Posts/Subreddit'
 import Homepage from './Components/Posts/Homepage'
-import NewPost from './Components/Posts/NewPosts'
 import Post from './Components/Posts/Post'
 import PostListing from './Components/Posts/PostListing'
 import { BrowserRouter,Router,Route, Routes } from 'react-router-dom'
@@ -60,6 +58,8 @@ function App() {
       }
 
       {/* LAYOUT OF THE MAIN MENU */}
+      {/*  */}
+
       <div className='flex m-1 w-[100vw] '>
         
         {/* PANEL */}
