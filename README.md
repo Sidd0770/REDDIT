@@ -1,2 +1,3 @@
 # REDDIT
-this is a Reddit clone
+this is a Reddit app
+
