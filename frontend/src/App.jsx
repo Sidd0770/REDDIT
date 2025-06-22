@@ -11,8 +11,8 @@ import Sidebar from './Components/Sidebar'
 import CreatePosts from './Components/Posts/CreatePosts'
 import PostPage from './Components/Posts/PostPage'
 import SearchPage from './Components/SearchPage'
-import { useEffect } from 'react'
-import { useDispatch} from 'react-redux'
+import {useEffect } from 'react'
+import {useDispatch} from 'react-redux'
 import {GetDataFromCookie} from './services/operations/authAPI'
 import { setUser,setLogin,setUserId} from './services/Slices/loginSlice'
 import Subreddit from './Components/Posts/Subreddit'
@@ -72,7 +72,6 @@ function App() {
           <Routes>
            
             <Route path="/" element={<Homepage/>}/>
-            {/* <Route path="/banner" element={<Banner/>}/> */}
             <Route path="/post" element={<Post/>}/>
             <Route path="/editpost" element={<PostListing/>}/>
             <Route path="/createpost" element={<CreatePosts/>}/>
@@ -88,9 +87,10 @@ function App() {
 
         {/* RECENTLY VISITED SUBREDDITS   */}
         <div className='mx-5 bg-amber-500 w-[17rem]'>
-          <Routes>
+          {/* <Routes>
+              <Route path="/" />
               <Route path="/profile/:username" element={<Moredetails/>}/>
-          </Routes>
+          </Routes> */}
         </div>
         
       </div>

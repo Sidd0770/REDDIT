@@ -41,8 +41,9 @@ export const joinSubreddit =async (req,res)=>{
     try{
         const id=req.user ?req.user.id:null;
         const {subreddit}=req.body;
+      
         
-        await Subreddit.findOneAndUpdate(
+        const response =await Subreddit.findOneAndUpdate(
             {name:subreddit},
             {
                 $addToSet:{
@@ -50,6 +51,7 @@ export const joinSubreddit =async (req,res)=>{
                 }
             }
         )
+        console.log("Response from joining subreddit:", response);
         res.status(200).json({
             success:true,
             message:"Joined Subreddit Successfully"
@@ -69,7 +71,7 @@ export const checkMember =async (req,res)=>{
         const id=req.user? req.user.id : null;
         
         const {subreddit}=req.query;
-
+        console.log("Checking membership for subreddit:", subreddit, "and user ID:", id);
         const foundSubreddit=await Subreddit.findOne(
             {name:subreddit},
             {members:1}

@@ -25,7 +25,8 @@ export const getPosts = async (req, res) => {
 
 export const getpostID = async (req, res) => {
     try {
-        const data=await Post.findById(req.params.id);
+        const id = req.params.id;
+        const data=await Post.findById(id);
         res.status(200).json({
             success:true,
             data:data

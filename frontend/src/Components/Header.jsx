@@ -158,9 +158,6 @@ const Header = ({setlogin}) => {
               
             }
 
-            
-            
-
         </div>
     </div>
   )

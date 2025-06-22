@@ -56,10 +56,8 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     try{
-
-        const {username, password} = req.body;
-        const user =await User.findOne({username});
-                    
+        const {username, password} = req.body;     
+        const user =await User.findOne({username});          
         if(!user){
             return res.status(404).json({
                 success:false,

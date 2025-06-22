@@ -3,10 +3,12 @@ import Post from "../Models/Post.js";
 //get comments from the backend
 export const getComments=async(req,res)=>{
     try{
-        const id =req.params.postID;
-        console.log("Post ID:", id);
+        const rootID =req.params.postId;
+        const parentID =req.query.parentID; ; 
+        
         const commments=await Post.find({
-            rootID:id,           
+            rootID:rootID,
+            parentID:parentID           
         });
 
         res.status(200).json({

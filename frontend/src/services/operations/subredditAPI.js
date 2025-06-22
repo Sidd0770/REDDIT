@@ -9,11 +9,10 @@ const{
 }=
 subredditEndpoints;
 
-export const joinSubreddit =async(id ,subreddit)=>{
+export const joinSubreddit =async(subreddit)=>{
    
     try{
         const response =axios.put(JOIN_SUBREDDIT,{
-            id:id,
             subreddit:subreddit           
         },
         {
@@ -45,14 +44,12 @@ export const checkMember =async(subreddit)=>{
 
 export const ModControls =async(subreddit)=>{
     try{
-        console.log("Subreddit in ModControls:", subreddit);
         const response =await axios.get(MOD_CONTROLS,{
             params:{
                 subreddit:subreddit,
             }
             ,withCredentials:true
         });
-        console.log("Response in ModControls:", response.data);
         return response.data.isModerator;
     }
     catch(error){

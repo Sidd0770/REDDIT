@@ -50,15 +50,15 @@ export const register=async(email,username,password)=>{
 export const Login =async(username,password)=>{
     try{
         const data={username,password};
-        console.log(data);
+        
         const response=await axios.post(LOGIN_API,data,{
             withCredentials:true,
         });
-
+        console.log("response from login api",response.data);
         return response.data.user;
 
     }catch(error){
-        console.log("error in login api",error);
+        console.error("error in login api",error);
     }
 }
 

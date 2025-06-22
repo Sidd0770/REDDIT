@@ -16,15 +16,12 @@ const AuthorLogin = (props) => {
   }
 
   const onSubmit=async(e)=>{
-    
+    e.preventDefault();
     if(username==='' || password===''){
       alert('Please fill all the fields');
     }else{
       props.setlogin(false);
     }
-
-    e.preventDefault();
-
     // using apiconnector
     Login(username,password)
       .then((res)=>{
