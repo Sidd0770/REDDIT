@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp,faArrowDown,faComment,faTrash} from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useState,useCallback } from 'react';
 import { useSelector} from 'react-redux';
 import {changeVotes} from '../../services/operations/postsAPI';
 import AuthorLogin from '../AuthorLogin';
@@ -20,6 +20,13 @@ const Post = (props) => {
   const mod=props.moderator;
   const [desc,setDesc]=useState(props.desc);
   // const [open,setOpen]=useState(props.open);
+
+  const [newCommentAdded,setNewCommentAdded]=useState(0);     //open the commentForm
+      
+  const handleCommentSubmit=useCallback(()=>{
+      setNewCommentAdded(prev=>prev+1);
+      console.log(newCommentAdded);        
+  },[]);
   
   const changeVote=()=>{
       if(loggedin){
@@ -139,9 +146,9 @@ const Post = (props) => {
                 <Upperbody/>
                 <PostStructure/>
                 <Lowerbody/>
-                <CommentForm rootID={ID} parentID={ID} subreddit={props.subreddit}/>
-                <CommentListing rootID={ID} parentID={ID} subreddit={props.subreddit}/>
-              </div>
+                <CommentForm rootID={ID} parentID={ID} subreddit={props.subreddit} onSubmit={handleCommentSubmit}/>
+                <CommentListing rootID={ID} parentID={ID} subreddit={props.subreddit} newCommentAdded={newCommentAdded}/>
+              </div>  
           ):
           (
               <div>

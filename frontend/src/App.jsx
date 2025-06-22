@@ -42,7 +42,7 @@ function App() {
 
   // console.log("location ",location);
   return (
-    <div className='overflow-hidden '>
+    <div className='overflow-y-auto '>
       <Header  setlogin={setlogin}/>
       {
         login ?(

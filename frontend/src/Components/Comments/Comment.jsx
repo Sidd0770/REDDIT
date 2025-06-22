@@ -30,10 +30,10 @@ const Comment = (props) => {
           else{
             SetLogin(true);
         }
-      }
+    }
 
   return (
-    <div className='border-l-2 m-3'>
+    <div className='border-l-2 m-3 '>
         {
             login &&  <AuthorLogin/>
         }

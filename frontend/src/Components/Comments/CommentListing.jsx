@@ -20,12 +20,14 @@ const CommentListing = (props) => {
 
   
   return (
-    <div>
-      {comments.map((comment)=>(
-          <Comment {...comment} key={comment._id}/>
-      ))
-      }
-    </div>
+    <div className='overflow-y-auto scrollbar-hide' >
+        <div>
+          {comments.map((comment)=>(
+              <Comment {...comment} key={comment._id}/>
+          ))
+          }
+        </div>
+    </div>   
   )
 }
 
