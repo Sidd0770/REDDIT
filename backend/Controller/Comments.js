@@ -1,4 +1,5 @@
 import Post from "../Models/Post.js";
+import Interactions from "../Models/Interactions.js";
 
 //get comments from the backend
 export const getComments=async(req,res)=>{

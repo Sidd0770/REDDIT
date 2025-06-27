@@ -13,7 +13,8 @@ const InterestSchema = new mongoose.Schema({
     frequent: { 
         type:Map, 
         of:Number, 
-        default:{} },
+        default:{} 
+    },
     suggestions:{
         type:[String]
     } 

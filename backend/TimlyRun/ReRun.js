@@ -1,7 +1,6 @@
 import Interaction from '../Models/Interactions.js'
 import Interest    from '../Models/Interest.js';
 
-
 const LIKE_WEIGHT = { upvote:3, comment:2, subscribe:4 };
 // views counted for "frequent"
 const DAYS = 7;                        // recent window

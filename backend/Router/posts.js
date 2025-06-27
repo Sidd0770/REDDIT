@@ -10,7 +10,7 @@ import { uploadFileToCloudinary } from '../middleware/uploadFileToCloudinary.js'
 const router=Router();
 
 router.get('/getPosts',getPosts);
-router.get('/getPost/:id',getpostID);
+router.get('/getPost/:id',verifyToken,getpostID);
 router.post('/createPost',verifyToken,upload.single('postImage'),uploadFileToCloudinary,createPost);
 router.put('/changeVotes/:id',changeVotes);
 router.put('/IncreasePostViewCount/:id',verifyToken,IncreasePostViewCount);

@@ -1,8 +1,17 @@
 import Post from "../Models/Post.js";
 import Profile from "../Models/Profile.js";
 import Subreddit from "../Models/Subreddit.js";
-import { uploadOnCloudinary } from "../utils/Cloudinary.js";
-import fs from "fs";
+import Interactions from "../Models/Interactions.js";
+import axios from "axios";
+
+const getCategory=async(title, desc)=>{
+  const { data } = await axios.post(
+    process.env.CLS_SVC_URL + '/classify',
+    { title, desc },
+    { timeout: 3000 }
+  );
+  return data.category;        
+}
 
 export const getPosts = async (req, res) => {
     try {
@@ -27,6 +36,18 @@ export const getpostID = async (req, res) => {
     try {
         const id = req.params.id;
         const data=await Post.findById(id);
+        console.log("Post Data",data);
+        //User opened a post, so we need to increase the view count
+
+        if(req.user){
+            await Interactions.create({
+                userId:req.user.id,
+                postId:id,
+                type:"view",
+                topics:data.topics
+            });
+        }
+        
         res.status(200).json({
             success:true,
             data:data
@@ -53,6 +74,10 @@ export const createPost =async(req,res)=>{
         const imageUrl =req.cloudinaryUrl ? req.cloudinaryUrl : null;
         console.log("Image URL",imageUrl);
         const imagePublicid= req.cloudinaryPublicId ? req.cloudinaryPublicId : null;
+        
+        //this calls the huggingface API to get the category of the post
+        const category =await getCategory(title,desc);
+        const topics = Array.from(new Set([subreddit.toLowerCase(), category]));
 
         const newPost =await Post.create({
             author,
@@ -64,6 +89,7 @@ export const createPost =async(req,res)=>{
             votes,
             rootID,
             parentID,
+            topics:topics,
         });
         
         //update the profile of the user who created the post

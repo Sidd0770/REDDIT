@@ -11,14 +11,12 @@ const InteractionSchema = new mongoose.Schema({
         ref:'Post' 
     },
     type:{ 
-        type:String, 
+        type:String,
         enum:['view','upvote','downvote','comment'] 
     },
     topics :{
-        type: [String], 
-        
-    },            
-    ts: { type:Date, default:Date.now, index:true }
+        type: [String],     
+    },  
 
 },{timestamps:true});
 
