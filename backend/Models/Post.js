@@ -50,7 +50,10 @@ const PostSchema=new mongoose.Schema({
         type:Date,
         default:null,
         index:true
-    }
+    },
+    topics :{
+        type:[String]
+    } 
   
 },{timestamps:true});
 
