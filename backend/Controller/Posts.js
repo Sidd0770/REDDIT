@@ -3,6 +3,8 @@ import Profile from "../Models/Profile.js";
 import Subreddit from "../Models/Subreddit.js";
 import Interactions from "../Models/Interactions.js";
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
 const getCategory=async(title, desc)=>{
   const { data } = await axios.post(
@@ -63,19 +65,20 @@ export const getpostID = async (req, res) => {
 
 export const createPost =async(req,res)=>{
     try {
-        const author=req.user ?req.user.username : null;
-        
+        // const author=req.user ?req.user.username : null;
+        const author = req.user ? req.user.username : null;
         const {title,desc,votes,subreddit}=req.body;
 
         const rootID = (req.body.rootID === 'null' || !req.body.rootID) ? null : req.body.rootID;
         const parentID = (req.body.parentID === 'null' || !req.body.parentID) ? null : req.body.parentID;
         console.log(rootID,parentID);
         console.log(req.body);
-        const imageUrl =req.cloudinaryUrl ? req.cloudinaryUrl : null;
+        const imageUrl=req.cloudinaryUrl ? req.cloudinaryUrl : null;
         console.log("Image URL",imageUrl);
         const imagePublicid= req.cloudinaryPublicId ? req.cloudinaryPublicId : null;
         
         //this calls the huggingface API to get the category of the post
+        console.log("huggingfaceAPI called");
         const category =await getCategory(title,desc);
         const topics = Array.from(new Set([subreddit.toLowerCase(), category]));
 
