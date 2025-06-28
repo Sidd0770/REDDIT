@@ -4,15 +4,23 @@ import Subreddit from "../Models/Subreddit.js";
 import Interactions from "../Models/Interactions.js";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config();    
 
 const getCategory=async(title, desc)=>{
-  const { data } = await axios.post(
-    process.env.CLS_SVC_URL + '/classify',
-    { title, desc },
-    { timeout: 3000 }
-  );
-  return data.category;        
+    const payload={ title, desc };
+    const { data } = await axios.post(
+        process.env.CLS_SVC_URL + '/classify',
+        payload,
+        { timeout: 3000 } 
+    );
+
+    const topicsRes=await axios.post(
+        process.env.CLS_SVC_URL+'/topics',
+        payload,
+        { timeout: 3000 }
+    )
+    console.log("this is the data returned by HuggingFace ",[data.category, ...topicsRes.data.topics])
+    return [data.category, ...topicsRes.data.topics];        
 }
 
 export const getPosts = async (req, res) => {
@@ -42,6 +50,7 @@ export const getpostID = async (req, res) => {
         //User opened a post, so we need to increase the view count
 
         if(req.user){
+            console.log("User is logged in, increasing view count");
             await Interactions.create({
                 userId:req.user.id,
                 postId:id,
@@ -72,7 +81,7 @@ export const createPost =async(req,res)=>{
         const rootID = (req.body.rootID === 'null' || !req.body.rootID) ? null : req.body.rootID;
         const parentID = (req.body.parentID === 'null' || !req.body.parentID) ? null : req.body.parentID;
         console.log(rootID,parentID);
-        console.log(req.body);
+        // console.log(req.body);
         const imageUrl=req.cloudinaryUrl ? req.cloudinaryUrl : null;
         console.log("Image URL",imageUrl);
         const imagePublicid= req.cloudinaryPublicId ? req.cloudinaryPublicId : null;
@@ -80,7 +89,7 @@ export const createPost =async(req,res)=>{
         //this calls the huggingface API to get the category of the post
         console.log("huggingfaceAPI called");
         const category =await getCategory(title,desc);
-        const topics = Array.from(new Set([subreddit.toLowerCase(), category]));
+        
 
         const newPost =await Post.create({
             author,
@@ -92,7 +101,7 @@ export const createPost =async(req,res)=>{
             votes,
             rootID,
             parentID,
-            topics:topics,
+            topics:category,
         });
         
         //update the profile of the user who created the post

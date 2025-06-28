@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transformers import pipeline
 import uvicorn, torch, os
+from keybert import KeyBERT
 
 app = FastAPI(title="Post-Classifier")
 
@@ -14,6 +15,24 @@ LABELS = [
     "technology", "science", "gaming", "business",
     "sports", "health", "entertainment", "politics"
 ]
+
+kw_model = KeyBERT()
+
+@app.post("/topics")
+async def get_topics(data:PostText):
+    try:
+        text = data.title + " " + data.desc
+        keywords =kw_model.extract_keywords(
+            text,
+            keyphrase_ngram_range=(1, 2),
+            stop_words='english',
+            top_n=5
+        )
+        topics =[kw[0] for kw in keywords]
+        return {"topics":topics}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 classifier = pipeline(
     "zero-shot-classification",
     model="facebook/bart-large-mnli",
@@ -32,7 +51,6 @@ async def classify(post: PostText):
         return {"category": out["labels"][0], "score": out["scores"][0]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
     
 @app.get("/health")
