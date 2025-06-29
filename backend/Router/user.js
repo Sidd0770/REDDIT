@@ -3,10 +3,11 @@ import {verifyToken} from '../middleware/auth.js';
 
 const router=express.Router();
 
-import  {registerUser,loginUser} from '../Controller/Auth.js';
+import  {registerUser,loginUser,verifyOTP} from '../Controller/Auth.js';
 
 router.post('/register', registerUser);
 router.post('/login',loginUser);
+router.post('/verifyOTP',verifyOTP);
 
 router.get('/protected', verifyToken, (req, res) => {
     res.status(200).json({

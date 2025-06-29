@@ -20,6 +20,7 @@ import ProfilePage from './Components/UserProfile/ProfilePage'
 import CustomFeeds from './Components/NavigationPanel/CustomFeeds'
 import Trending from './Components/NavigationPanel/Trending'
 import Moredetails from './Components/UserProfile/Moredetails'
+import OTPVerification from './Components/OTPverification'
 
 function App() {
   const [login,setlogin]=useState(false);
@@ -46,7 +47,7 @@ function App() {
       <Header  setlogin={setlogin}/>
       {
         login ?(
-          <AuthorLogin setlogin={setlogin} setsignup={setsignup} />
+          <AuthorLogin setlogin={setlogin} setsignup={setsignup}  />
         ):
         (<></>)
       }
@@ -56,6 +57,7 @@ function App() {
         ):
         (<></>)
       }
+      
 
       {/* LAYOUT OF THE MAIN MENU */}
       {/*  */}

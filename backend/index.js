@@ -36,7 +36,7 @@ connectDB()
         app.listen(PORT,()=>{
             console.log(`Server is running on port ${PORT}`);
         });
-        cron.schedule('30 2 * * *', async () => { // 2:30 AM every day
+        cron.schedule('*/5 * * * *', async () => { // Every 5 minutes
             console.log(`[${new Date().toLocaleString()}] Running daily profile rebuild...`);
             try {
                 await rebuildProfiles(); // Your core logic

@@ -46,11 +46,8 @@ export const getpostID = async (req, res) => {
     try {
         const id = req.params.id;
         const data=await Post.findById(id);
-        console.log("Post Data",data);
-        //User opened a post, so we need to increase the view count
-
         if(req.user){
-            console.log("User is logged in, increasing view count");
+            
             await Interactions.create({
                 userId:req.user.id,
                 postId:id,
@@ -65,6 +62,7 @@ export const getpostID = async (req, res) => {
         })
     }
      catch (error) {
+        console.error("Error in getpostID:", error);
         res.status(500).json({
             success:false,
             message:"Error while fetching posts"
@@ -103,6 +101,16 @@ export const createPost =async(req,res)=>{
             parentID,
             topics:category,
         });
+
+        //increases the interaction count for comments under the post
+        if(req.user && rootID !== null){
+            await Interactions.create({
+                userId:req.user.id,
+                postId:rootID,
+                type:"view",
+                topics:data.topics
+            });
+        }
         
         //update the profile of the user who created the post
         if(rootID===null && parentID===null){
@@ -168,27 +176,54 @@ export const createPost =async(req,res)=>{
     }
 }
 
-export const changeVotes =async(req,res)=>{
+export const upvotePost =async (req,res)=>{
     try {
-       const response=await Post.findByIdAndUpdate(req.params.id,
-        {votes:req.body.votes},
-        {new:true});
-       
-       res.status(200).json({
-            success:true,
-            data:response,
-            message:"Post Upvoted successfully"
-       })
-
+        const postId=req.params.id;
+        await Post.findByIdAndUpdate(postId,{
+            $inc:{votes:1},       
+        })
+        
+        if(req.user){
+            await Interactions.create({
+                userId:req.user.id,
+                postId:postId,
+                type:"upvote"
+            });
+        }
     } catch (error) {
-        console.log(error);
+        console.log("Error in upvoting post",error);
         res.status(500).json({
             success:false,
             error:error.message,
-            message:"Error while creating post"
+            message:"Error while upvoting post"
         })
     }
 }
+
+export const downvotePost =async (req,res)=>{
+    try {
+        const postId=req.params.id;
+        await Post.findByIdAndUpdate(postId,{
+            $inc:{votes:-1},       
+        })
+        //update the interactions collection
+        if(req.user){
+            await Interactions.create({
+                userId:req.user.id,
+                postId:postId,
+                type:"downvote"
+            });
+        }
+    } catch (error) {
+        console.log("Error in downvoting post",error);
+        res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error while downvoting post"
+        })
+    }
+}
+
 export const IncreasePostViewCount = async(req,res)=>{
     try{
         const id =req.params.id;

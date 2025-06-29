@@ -9,7 +9,7 @@ const{
 
 export const getProfile=async(username,filters)=>{
     try{
-        console.log("username in get profile api",username);
+        
         const response=await axios.get(GET_PROFILE+username,{
             params:{
                 filter:filters
@@ -18,8 +18,7 @@ export const getProfile=async(username,filters)=>{
         });
         
 
-        // console.log("response from get profile api",response);    
-        console.log("response from get profile api",response);
+        
         return response;
         
     }catch(error){

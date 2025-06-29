@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp,faArrowDown,faComment,faTrash} from '@fortawesome/free-solid-svg-icons';
 import { useState,useCallback } from 'react';
-import { useSelector} from 'react-redux';
-import {changeVotes} from '../../services/operations/postsAPI';
+// import { useSelector} from 'react-redux';
+import {downvotePost,upvotePost} from '../../services/operations/postsAPI';
 import AuthorLogin from '../AuthorLogin';
 import CommentListing from '../Comments/CommentListing';
 import CommentForm from '../Comments/CommentForm';
 import {deletePost} from '../../services/operations/postsAPI';
 
 const Post = (props) => {
-  const loggedin=useSelector(state=>state.isLogin);
+  // const loggedin=useSelector(state=>state.isLogin);
   const vote=props.votes;
   const ID=props._id;
   const [voteCount,setVoteCount]=useState(vote);
@@ -28,14 +28,6 @@ const Post = (props) => {
       console.log(newCommentAdded);        
   },[]);
   
-  const changeVote=()=>{
-      if(loggedin){
-        changeVotes(ID,voteCount)
-      }
-      else{
-        SetLogin(true);
-    }
-  }
   const DELETE =()=>{  
       deletePost(ID)
       .then((res)=>{  
@@ -89,14 +81,14 @@ const Post = (props) => {
       <div className='flex my-4'>
           <button onClick={()=>{
                         setVoteCount(voteCount+1);
-                        changeVote(ID,voteCount);
+                        upvotePost(ID);
           }} className=' m-1  rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
               <FontAwesomeIcon  icon={faArrowUp} />
               <p className='m-2'>{voteCount}</p>
           </button>
           <button onClick={()=>{
                         setVoteCount(voteCount-1);
-                        changeVote(ID,voteCount);
+                        downvotePost(ID);
           }}  className='m-1 rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
               <FontAwesomeIcon icon={faArrowDown} />
 

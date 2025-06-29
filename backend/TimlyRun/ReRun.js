@@ -48,40 +48,102 @@ export const rebuildProfiles=async()=>{
   ]);
 
   // 3️⃣ Unexplored but relevant topics
-  await Interest.aggregate([
-    { $project:{
-        likesArr:{ $objectToArray:'$likes' },
-        frequentArr:{ $objectToArray:'$frequent' },
-        allKnown:{ $setUnion:[
-          { $ifNull:[ { $map:{ input:{ $objectToArray:'$likes' }, as:'l', in:'$$l.k' } }, [] ]},
-          { $ifNull:[ { $map:{ input:{ $objectToArray:'$frequent' }, as:'f', in:'$$f.k' } }, [] ]}
-        ]}
-    }},
-    // find “similar users” that share at least one like OR frequent topic
-    { $lookup:{
-        from:'interests',
-        let:{ known:'$allKnown', me:'$_id' },
-        pipeline:[
-          { $match:{ $expr:{ $and:[
-              { $ne:['$_id','$$me'] },
-              { $gt:[ { $size:{ $setIntersection:[ '$$known', { $setUnion:[
-                  { $keys:'$likes' },
-                  { $keys:'$frequent' } ] } ] } }, 0 ] }
-          ]}}}
+    await Interest.aggregate([
+    /* 3.1  turn objects -> array[{k,v}] and collect known topics */
+    {
+      $project: {
+        likeKeys: {
+          $map: {                          // ← instead of $keys: "$likes"
+            input: { $objectToArray: '$likes' },
+            as: 'pair',
+            in: '$$pair.k'
+          }
+        },
+        freqKeys: {
+          $map: {                          // ← instead of $keys: "$frequent"
+            input: { $objectToArray: '$frequent' },
+            as: 'pair',
+            in: '$$pair.k'
+          }
+        }
+      }
+    },
+    {
+      $addFields: {
+        allKnown: { $setUnion: ['$likeKeys', '$freqKeys'] }
+      }
+    },
+
+    /* 3.2  find neighbours that share ≥1 topic */
+    {
+      $lookup: {
+        from: 'interests',
+        let: { known: '$allKnown', me: '$_id' },
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              likeKeys: {
+                $map: {
+                  input: { $objectToArray: '$likes' },
+                  as: 'p',
+                  in: '$$p.k'
+                }
+              },
+              freqKeys: {
+                $map: {
+                  input: { $objectToArray: '$frequent' },
+                  as: 'p',
+                  in: '$$p.k'
+                }
+              }
+            }
+          },
+          {
+            $addFields: {
+              theirKeys: { $setUnion: ['$likeKeys', '$freqKeys'] }
+            }
+          },
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $ne: ['$_id', '$$me'] },
+                  {
+                    $gt: [
+                      { $size: { $setIntersection: ['$$known', '$theirKeys'] } },
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          }
         ],
-        as:'neighbours'
-    }},
-    { $unwind:'$neighbours' },
-    { $project:{
-        allKnown:1,
-        neighbourTopics:{ $setUnion:[
-          { $keys:'$neighbours.likes' },
-          { $keys:'$neighbours.frequent' }
-        ]}
-    }},
-    { $project:{
-        suggestions:{ $setDifference:[ '$neighbourTopics', '$allKnown' ] }
-    }},
-    { $merge:{ into:'interests', on:'_id', whenMatched:'merge', whenNotMatched:'discard' }}
+        as: 'neighbours'
+      }
+    },
+    { $unwind: '$neighbours' },
+
+    /* 3.3  build suggestions */
+    {
+      $project: {
+        allKnown: 1,
+        neighbourTopics: '$neighbours.theirKeys'
+      }
+    },
+    {
+      $project: {
+        suggestions: { $setDifference: ['$neighbourTopics', '$allKnown'] }
+      }
+    },
+    {
+      $merge: {
+        into: 'interests',
+        on: '_id',
+        whenMatched: 'merge',
+        whenNotMatched: 'discard'
+      }
+    }
   ]);
 }

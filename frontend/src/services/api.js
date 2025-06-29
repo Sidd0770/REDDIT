@@ -3,7 +3,10 @@ const BASE_URL="http://localhost:3000/api/v1";
 export const ENDPOINTS = {
     REGISTER_API:BASE_URL + "/auth/register",
     LOGIN_API:BASE_URL + "/auth/login",
-    INIT_LOGIN_API:BASE_URL+"/auth/protected"
+    INIT_LOGIN_API:BASE_URL+"/auth/protected",
+    VERIFY_OTP_API:BASE_URL+"/auth/verifyOTP",
+    GOOGLE_LOGIN_API:BASE_URL + "/auth/googleLogin",
+    GOOGLE_AUTH_API:BASE_URL + "/auth/googleAuth",
     
 }
 
@@ -15,8 +18,9 @@ export const postsEndpoints = {
     INCREASE_VIEW_COUNT:BASE_URL+"/IncreasePostViewCount/",
     TRENDING_POSTS:BASE_URL+"/TrendingPosts",
     DELETE_POST:BASE_URL+"/deletePost/",
+    UPVOTE_POST:BASE_URL+"/upvotePost/",
+    DOWNVOTE_POST:BASE_URL+"/downvotePost/"
     
-
 }
 
 export const commentEndPoints={

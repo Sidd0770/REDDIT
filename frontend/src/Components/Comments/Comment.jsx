@@ -2,10 +2,11 @@ import React, { useCallback, useState } from 'react'
 import {format} from 'timeago.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowUp, faArrowDown, faComment} from '@fortawesome/free-solid-svg-icons';
-import { changeVotes } from '../../services/operations/postsAPI';
+import { upvotePost,downvotePost } from '../../services/operations/postsAPI';
 import { useSelector } from 'react-redux';
 import CommentForm from './CommentForm';
 import CommentListing from './CommentListing';
+import { useEffect } from 'react';
  
 const Comment = (props) => {
     const rootID=props.rootID;   //this is rootID of the comment
@@ -22,15 +23,6 @@ const Comment = (props) => {
         setNewCommentAdded(prev=>prev+1);
         console.log(newCommentAdded);        
     },[]);
-
-    const changeVote=()=>{  
-          if(loggedin){
-            changeVotes(ID,voteCount)
-          }
-          else{
-            SetLogin(true);
-        }
-    }
 
   return (
     <div className='border-l-2 m-3 '>
@@ -50,19 +42,18 @@ const Comment = (props) => {
              </div>
         </div>
         
-
         {/* UPVOTE || DOWNVOTE || COMMENT */}
         <div className='flex my-4'>
             <button onClick={()=>{
-                            setVoteCount(voteCount+1);
-                            changeVote(ID,voteCount);
+                            upvotePost(ID);
+                            setVoteCount(voteCount+1);           
             }} className=' border-1 border-gray-400 mx-1  rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
                 <FontAwesomeIcon  icon={faArrowUp} />
                 <p className='m-2'>{voteCount}</p>
             </button>
             <button onClick={()=>{
-                            setVoteCount(voteCount-1);
-                            changeVote(ID,voteCount);
+                            downvotePost(ID);
+                            setVoteCount(voteCount-1);                        
             }}  className=' border-1 border-gray-400 m-1 rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
                 <FontAwesomeIcon icon={faArrowDown} />
 

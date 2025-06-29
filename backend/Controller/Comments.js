@@ -1,5 +1,7 @@
 import Post from "../Models/Post.js";
 import Interactions from "../Models/Interactions.js";
+import Profile from "../Models/Profile.js";
+import Subreddit from "../Models/Subreddit.js";
 
 //get comments from the backend
 export const getComments=async(req,res)=>{
@@ -25,45 +27,114 @@ export const getComments=async(req,res)=>{
     }
 }
 
-//Create Comment in the backend
-// export const createComment=async(req,res)=>{
-//     try{
-//         const {text,author,postId,parentId}=req.body;
-//         const comment=await Comment.create({
-//             text,
-//             author,
-//             postId,
-//             parentId,
-//         });
+export const createPost =async(req,res)=>{
+    try {
+        
+        const author = req.user ? req.user.username : null;
+        const {title,desc,votes,subreddit}=req.body;
+        console.log("this is the comment data ",req.body);
 
-//         await Profile.findOneAndUpdate(
-//             {username:author},
-//             {
-//                 $push:{
-//                     commentsCreated:comment._id,
+        const rootID = (req.body.rootID === 'null' || !req.body.rootID) ? null : req.body.rootID;
+        const parentID = (req.body.parentID === 'null' || !req.body.parentID) ? null : req.body.parentID;
+        console.log(rootID,parentID);
+        // console.log(req.body);
+        const imageUrl=req.cloudinaryUrl ? req.cloudinaryUrl : null;
+        console.log("Image URL",imageUrl);
+        const imagePublicid= req.cloudinaryPublicId ? req.cloudinaryPublicId : null;
+        
+        const newPost =await Post.create({
+            author,
+            title,
+            subreddit,
+            image:imageUrl,
+            imagePublicid:imagePublicid,
+            desc,
+            votes,
+            rootID,
+            parentID,
+            
+        });
+        console.log("New Post Created",newPost);
 
-//                 },
-//                 $inc:{
-//                     CommentKarma:1
-//                 },
+        //increases the interaction count for comments under the post
+        if(req.user ){
+            await Interactions.create({
+                userId:req.user.id,
+                postId:rootID,
+                type:"view",
                 
-//             },
-//             { new: true, upsert: true }
-//         )
+            });
+        }
+        console.log("Interactions created for the post");
 
-//         res.status(200).json({
-//             success:true,
-//             data:comment,
-//             message:"comment created succesfully"
-//         })
-//     }catch(error){
-//         res.status(500).json({
-//             success:false,
-//             error:error.message,
+        //update the profile of the user who created the post
+        if(rootID===null && parentID===null){
+            await Profile.findOneAndUpdate(
+            {username:author},
+            {
+                $push:{
+                    postsCreated:newPost._id,
+                    recentPosts:{
+                        $each:[newPost._id],
+                        $slice:-10
+                    }  
+                },
+                $inc:{PostKarma:1}              
+            },    
 
-//         })
-//     }
-// }
+            {new: true, upsert: true}
+            )
+
+        }
+        console.log("Profile updated with the post");
+
+        //Update the profile of the User but it is comments
+        await Profile.findOneAndUpdate(
+            {username:author},
+            {
+                $push:{
+                    commentsCreated:newPost._id,
+                    recentPosts:{
+                        $each:[newPost._id],
+                        $slice:-10
+                    }  
+                },
+                $inc:{PostKarma:1}              
+            },    
+
+            {new: true, upsert: true}
+        )
+        console.log("Profile updated with the post");
+
+        //Update the subreddit with the post
+        await Subreddit.findOneAndUpdate(
+            {name:subreddit},
+            {
+                $push:{
+                    Posts:newPost._id
+                }
+            },
+            {new:true,upsert:true}
+        )
+        console.log("Subreddit updated with the post");
+
+        res.status(200).json({
+            success:true,
+            data:newPost,
+            message:"Post created successfully"
+        });
+
+        console.log("Comment created Successfully");
+    } 
+    catch (error) {
+        // console.error("Error in createPost:", error);
+        res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error while creating post"
+        })
+    }
+}
 
 export const searchComments=async(req,res)=>{
     try{

@@ -17,7 +17,16 @@ const UserSchema = new mongoose.Schema({
     },
     token:{
         type:String
-    }
+    },
+    isVerified: { // For email verification
+        type: Boolean,
+        default: false
+    },
+    googleId: { // For Google sign-in
+        type: String,
+        unique: true,
+        sparse: true // Allows null values, but ensures uniqueness for non-null
+    },
 })
 
 const User = mongoose.model('User',UserSchema);

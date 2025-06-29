@@ -7,6 +7,9 @@ const {
   CREATE_POST,
   CHANGEVOTES,
   TRENDING_POSTS,
+  UPVOTE_POST,
+  DOWNVOTE_POST,
+
 INCREASE_VIEW_COUNT,
     DELETE_POST
   
@@ -20,8 +23,7 @@ export const getAllposts = async (subreddit) => {
         //if the subreddit is not null then filter the posts by subreddt 
         
         if(sub){
-            console.log(sub);
-            console.log(dd);
+            
             const filteredPosts=dd.data.filter((post)=>(
                 post.subreddit===sub
             ))
@@ -41,7 +43,7 @@ export const createPost=async(data)=>{
         const response=await axios.post(CREATE_POST,data,
             {withCredentials:true});
         
-        console.log("Post Data ",response.data);
+        
  
     }catch(error){
         console.log("Post Creation Failed ",error);
@@ -51,7 +53,9 @@ export const createPost=async(data)=>{
 
 export const getPostById=async(id)=>{
     try{
-        const response=await axios.get(GET_POST_BY_ID+id);
+        const response=await axios.get(GET_POST_BY_ID+id,{
+            withCredentials:true
+        });
             
         return response;
     }
@@ -60,13 +64,28 @@ export const getPostById=async(id)=>{
     }
 }
 
-export const changeVotes=async(id,vote)=>{
-    try{
-        const response=await axios.put(CHANGEVOTES+id,{votes:vote});
-        // console.log("response",response.data.data);
-        return response;
-    }catch(error){
-        console.log("Post fetching failed",error);
+
+export const upvotePost =async (postId)=>{
+    try {
+        const response = await axios.put(UPVOTE_POST+postId,
+            {}, 
+            {withCredentials:true});
+        return response.data;
+    } catch (error) {
+        console.log("Error in upvoting post",error);
+        throw error;
+    }
+}
+
+export const downvotePost =async (postId)=>{
+    try {
+        const response = await axios.put(DOWNVOTE_POST+postId,
+            {}, 
+            { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.log("Error in downvoting post", error);
+        throw error;
     }
 }
 
@@ -75,7 +94,7 @@ export const increaseViewCount=async(id)=>{
         const response =await axios.put(INCREASE_VIEW_COUNT+id,
             {},
             {withCredentials:true});
-        console.log("IncreaseViewsCount :",response)
+        
 
     }catch(error){
         console.log("Error in increasing post view count",error);
@@ -101,7 +120,7 @@ export const deletePost =async(id)=>{
             
             withCredentials:true
         })
-        console.log("Post deleted successfully",response);
+        
         return response;
     }catch(error){
         console.log("Error in deleting post",error);

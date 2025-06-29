@@ -1,5 +1,11 @@
 import Interest from "../Models/Interest";
 import Post from "../Models/Post";
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
+
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const GOOGLE_CX = process.env.GOOGLE_CX;
 
 export const getRecommendedSearches = async (req, res) => {
     try{
@@ -44,3 +50,6 @@ export const getRecommendedSearches = async (req, res) => {
         })
     }
 }
+
+
+

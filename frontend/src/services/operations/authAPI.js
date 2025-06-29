@@ -6,7 +6,8 @@ import axios from "axios";
 const {
     REGISTER_API,
     LOGIN_API,
-    INIT_LOGIN_API
+    INIT_LOGIN_API,
+    VERIFY_OTP_API
 }=  ENDPOINTS;
 
 export const register=async(email,username,password)=>{
@@ -37,12 +38,27 @@ export const register=async(email,username,password)=>{
         });
         console.log("the data required")
         console.log(response.data);
+        return response.data;
         
     } catch (error) {
         console.error('Registration failed:', error);
         if (error.response) {
             console.log(error.response.data);
         }
+    }
+}
+
+export const verifyOTP=async(userId,otp)=>{
+    try {
+        const data ={userId,otp};
+        const response =await axios.post(VERIFY_OTP_API,data,{
+            withCredentials:true,
+        });
+        return response.data;
+
+    } catch (error) {
+        console.error("error in verify otp api",error); 
+        throw new Error("OTP verification failed");
     }
 }
 

@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import Button from '../Button.jsx'
 import { faImage,faGift,faA} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { createPost } from '../../services/operations/postsAPI.js'
+import { createComment } from '../../services/operations/commentAPI.js'
 
 
 //props mei hoga postid and parentid and username so pass the post it to the backend api call 
@@ -31,13 +31,9 @@ const CommentForm = (props) => {
         formData.append('rootID',rootID);
         formData.append('parentID',parentID);
         formData.append('subreddit',subreddit);
-        if(image!=null){
-            formData.append('postImage',image);
-        }else{
-            formData.append('postImage',null);
-        }
+        
 
-        createPost(formData)
+        createComment(formData)
         .then(res=>{
             console.log(res);
             ResetValues();
