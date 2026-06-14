@@ -19,6 +19,7 @@ import Subreddit from './Components/Posts/Subreddit'
 import ProfilePage from './Components/UserProfile/ProfilePage'
 import CustomFeeds from './Components/NavigationPanel/CustomFeeds'
 import Trending from './Components/NavigationPanel/Trending'
+import Explore from './Components/NavigationPanel/Explore'
 import Moredetails from './Components/UserProfile/Moredetails'
 import OTPVerification from './Components/OTPverification'
 
@@ -43,7 +44,7 @@ function App() {
 
   // console.log("location ",location);
   return (
-    <div className='overflow-y-auto '>
+    <div className='min-h-screen bg-[#0e1113] text-[#d7dadc]'>
       <Header  setlogin={setlogin}/>
       {
         login ?(
@@ -60,39 +61,29 @@ function App() {
       
 
       {/* LAYOUT OF THE MAIN MENU */}
-      {/*  */}
-
-      <div className='flex m-1 w-[100vw] '>
+      <div className='flex max-w-[1200px] mx-auto pt-4 gap-6 px-4'>
         
-        {/* PANEL */}
-        <div className=' w-[15rem] '>
+        {/* SIDEBAR */}
+        <div className='w-[220px] shrink-0 sticky top-[60px] self-start h-[calc(100vh-76px)] overflow-y-auto hidden md:block pr-2'>
           <Sidebar/>
         </div>
 
         {/* MAIN CONTENT */}
-        <div className='w-[50rem]  m-1 border-l-1 border-r-1 p-5 border-white'>
+        <div className='flex-1 min-w-0 border-l border-[#343536] pl-6 min-h-[calc(100vh-76px)]'>
           <Routes>
            
             <Route path="/" element={<Homepage/>}/>
             <Route path="/post" element={<Post/>}/>
             <Route path="/editpost" element={<PostListing/>}/>
             <Route path="/createpost" element={<CreatePosts/>}/>
-            <Route path="/createpost" element={<CreatePosts/>}/>
             <Route path="/posts/:id" element={<PostPage/>}/>
             <Route path="/r/:subreddit" element={<Subreddit/>}/>
             <Route path="/search/:keyword" element={<SearchPage/>}/>
+            <Route path="/explore" element={<Explore/>}/>
             <Route path="/profile/:username" element={<ProfilePage/>}/>
             <Route path="/feed/:username" element={<CustomFeeds/>}/>
             <Route path="/Popular" element={<Trending/>}/>
           </Routes>
-        </div>
-
-        {/* RECENTLY VISITED SUBREDDITS   */}
-        <div className='mx-5 bg-amber-500 w-[17rem]'>
-          {/* <Routes>
-              <Route path="/" />
-              <Route path="/profile/:username" element={<Moredetails/>}/>
-          </Routes> */}
         </div>
         
       </div>

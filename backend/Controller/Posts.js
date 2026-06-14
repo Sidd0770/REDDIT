@@ -104,12 +104,15 @@ export const createPost =async(req,res)=>{
 
         //increases the interaction count for comments under the post
         if(req.user && rootID !== null){
-            await Interactions.create({
-                userId:req.user.id,
-                postId:rootID,
-                type:"view",
-                topics:data.topics
-            });
+            const rootPost = await Post.findById(rootID);
+            if(rootPost) {
+                await Interactions.create({
+                    userId:req.user.id,
+                    postId:rootID,
+                    type:"comment",
+                    topics:rootPost.topics
+                });
+            }
         }
         
         //update the profile of the user who created the post
@@ -176,51 +179,56 @@ export const createPost =async(req,res)=>{
     }
 }
 
-export const upvotePost =async (req,res)=>{
+export const upvotePost = async (req,res)=>{
     try {
-        const postId=req.params.id;
-        await Post.findByIdAndUpdate(postId,{
-            $inc:{votes:1},       
-        })
+        const postId = req.params.id;
+        const post = await Post.findByIdAndUpdate(postId, {
+            $inc: { votes: 1 },       
+        });
         
-        if(req.user){
+        if (req.user && post) {
             await Interactions.create({
-                userId:req.user.id,
-                postId:postId,
-                type:"upvote"
+                userId: req.user.id,
+                postId: postId,
+                type: "upvote",
+                topics: post.topics
             });
         }
+        res.status(200).json({ success: true, message: "Upvoted successfully" });
     } catch (error) {
         console.log("Error in upvoting post",error);
         res.status(500).json({
-            success:false,
-            error:error.message,
-            message:"Error while upvoting post"
-        })
+            success: false,
+            error: error.message,
+            message: "Error while upvoting post"
+        });
     }
 }
 
-export const downvotePost =async (req,res)=>{
+export const downvotePost = async (req,res)=>{
     try {
-        const postId=req.params.id;
-        await Post.findByIdAndUpdate(postId,{
-            $inc:{votes:-1},       
-        })
+        const postId = req.params.id;
+        const post = await Post.findByIdAndUpdate(postId, {
+            $inc: { votes: -1 },       
+        });
+        
         //update the interactions collection
-        if(req.user){
+        if (req.user && post) {
             await Interactions.create({
-                userId:req.user.id,
-                postId:postId,
-                type:"downvote"
+                userId: req.user.id,
+                postId: postId,
+                type: "downvote",
+                topics: post.topics
             });
         }
+        res.status(200).json({ success: true, message: "Downvoted successfully" });
     } catch (error) {
         console.log("Error in downvoting post",error);
         res.status(500).json({
-            success:false,
-            error:error.message,
-            message:"Error while downvoting post"
-        })
+            success: false,
+            error: error.message,
+            message: "Error while downvoting post"
+        });
     }
 }
 

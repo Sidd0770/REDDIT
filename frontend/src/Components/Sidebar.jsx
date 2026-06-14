@@ -7,7 +7,7 @@ import Community from './NavigationPanel/Community'
 
 const Sidebar = () => {
   return (
-    <div className=''>
+    <div className='py-3 pr-2'>
          <Home/>
          <Moderation/>
          <Community/>

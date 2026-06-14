@@ -18,9 +18,11 @@ const PostListing = (props) => {
   // console.log("posts",posts);
 
   return (
-    <div  className='overflow-y-scroll h-[100vh]'>
-        {posts.map(post=>(
-          <Post key={post._id} {...post} type={type}/>
+    <div className='flex flex-col gap-4 overflow-y-auto h-[calc(100vh-76px)] pb-8 pr-1'>
+        {posts.map((post, index) =>(
+          <div key={post._id} style={{ animationDelay: `${index * 0.05}s` }}>
+            <Post {...post} type={type}/>
+          </div>
         ))}
     </div>
   )

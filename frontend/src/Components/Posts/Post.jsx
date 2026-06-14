@@ -21,6 +21,9 @@ const Post = (props) => {
   const [desc,setDesc]=useState(props.desc);
   // const [open,setOpen]=useState(props.open);
 
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
+
   const [newCommentAdded,setNewCommentAdded]=useState(0);     //open the commentForm
       
   const handleCommentSubmit=useCallback(()=>{
@@ -36,14 +39,41 @@ const Post = (props) => {
       })
   }
 
+  const handleUpvote = () => {
+    if (upvoted) {
+      setVoteCount(voteCount - 1);
+      setUpvoted(false);
+    } else {
+      setVoteCount(downvoted ? voteCount + 2 : voteCount + 1);
+      setUpvoted(true);
+      setDownvoted(false);
+    }
+    upvotePost(ID);
+  };
+
+  const handleDownvote = () => {
+    if (downvoted) {
+      setVoteCount(voteCount + 1);
+      setDownvoted(false);
+    } else {
+      setVoteCount(upvoted ? voteCount - 2 : voteCount - 1);
+      setDownvoted(true);
+      setUpvoted(false);
+    }
+    downvotePost(ID);
+  };
+
   const Upperbody=()=>{
     return(
-      <div className=''>
+      <div>
         {
             type === "homepage" ?
             (
               <div>                 
-                <Link to={{pathname:`/r/${props.subreddit}`,state:{postID:props.subreddit}}} className='text-sm '> u/{props.subreddit}</Link>
+                <Link to={`/r/${props.subreddit}`} state={{postID:props.subreddit}}
+                  className='text-xs font-semibold text-[#ff4500] hover:underline'>
+                  r/{props.subreddit}
+                </Link>
               </div>
             )
             :
@@ -51,20 +81,23 @@ const Post = (props) => {
               <div >
                 
                 <div className='flex justify-between items-center'>
-                  <div className='text-sm'>
-                    <h3 className='text-sm'> u/{props.subreddit}</h3>
-                    Posted by u/{props.author}
-
+                  <div className='text-xs text-[#818384]'>
+                    <Link to={`/r/${props.subreddit}`} state={{postID:props.subreddit}}
+                          className='font-semibold text-[#ff4500] hover:underline'>
+                      r/{props.subreddit}
+                    </Link>
+                    <span className='mx-1'>•</span>
+                    <span>Posted by u/{props.author}</span>
                   </div>
-                  <h5>
+                  <div>
                       { mod 
                           &&
-                        <button className='px-3 py-2 rounded-full hover:scale-[120%] hover:cursor-pointer ' 
-                        onClick={()=>{DELETE();}}>
-                            <FontAwesomeIcon icon={faTrash} />
+                        <button className='p-2 rounded-full text-[#818384] hover:text-[#ff4500] hover:bg-[#ff450015] transition-colors duration-200' 
+                        onClick={(e)=>{e.preventDefault(); e.stopPropagation(); DELETE();}}>
+                            <FontAwesomeIcon icon={faTrash} className='text-sm' />
                         </button> 
                       }
-                  </h5>
+                  </div>
                 </div>
                 
               </div>
@@ -78,28 +111,25 @@ const Post = (props) => {
 
   const Lowerbody=()=>{
     return (
-      <div className='flex my-4'>
-          <button onClick={()=>{
-                        setVoteCount(voteCount+1);
-                        upvotePost(ID);
-          }} className=' m-1  rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
-              <FontAwesomeIcon  icon={faArrowUp} />
-              <p className='m-2'>{voteCount}</p>
+      <div className='flex items-center gap-1 mt-2 -ml-1'>
+          <button onClick={handleUpvote}
+            className={`p-1.5 rounded-full transition-colors duration-200 flex items-center gap-1 text-sm ${upvoted ? 'text-[#ff4500]' : 'text-[#818384] hover:text-[#d7dadc] hover:bg-[#272729]'}`}>
+              <FontAwesomeIcon icon={faArrowUp} />
           </button>
-          <button onClick={()=>{
-                        setVoteCount(voteCount-1);
-                        downvotePost(ID);
-          }}  className='m-1 rounded-full w-[3rem] h-[2rem] flex justify-center items-center hover:scale-110'>
+          <span className={`text-xs font-semibold min-w-[20px] text-center ${upvoted ? 'text-[#ff4500]' : downvoted ? 'text-[#5a75cc]' : 'text-[#d7dadc]'}`}>
+            {voteCount}
+          </span>
+          <button onClick={handleDownvote}
+            className={`p-1.5 rounded-full transition-colors duration-200 flex items-center gap-1 text-sm ${downvoted ? 'text-[#5a75cc]' : 'text-[#818384] hover:text-[#d7dadc] hover:bg-[#272729]'}`}>
               <FontAwesomeIcon icon={faArrowDown} />
-
           </button>
-          <button className='m-1 rounded-full w-[3rem] h-[2rem]  flex justify-center items-center hover:scale-110'
+          <button className='ml-2 px-3 py-1.5 rounded-full text-[#818384] hover:text-[#d7dadc] hover:bg-[#272729] transition-colors duration-200 flex items-center gap-1.5 text-xs font-semibold'
                 onClick={()=>{
                       props.open=true
                 }}
           >
-                
               <FontAwesomeIcon icon={faComment} />
+              <span>Comments</span>
           </button>
             
       </div>
@@ -107,45 +137,47 @@ const Post = (props) => {
   }
 
   const PostStructure=()=>{
+    const isDeleted = desc === '[DELETED]';
     return(
-     <div>
+     <div className='mt-2'>
           {
             login && <AuthorLogin/>
           }
           {/*  subreddit and the username */}
 
-          <h2 className='text-xl m-2'>{props.title}</h2>
-          <div className='text-sm leading-6'>
+          <h2 className='text-lg font-semibold text-[#d7dadc] leading-snug'>{props.title}</h2>
+          <div className={`text-sm leading-6 mt-1 ${isDeleted ? 'text-[#6a6c6e] italic' : 'text-[#d7dadc]/80'}`}>
             <p>{desc}</p>
           </div>
           {
             props.image &&
-              <div className="my-2">
-                  <img src={props.image} className="w-full h-full rounded-lg" />
+              <div className="my-3 rounded-xl overflow-hidden">
+                  <img src={props.image} className="w-full h-auto rounded-xl" />
               </div>
           }
           
       </div>
     )     
   }
-  const postclasses="block p-2 rounded-lg hover:bg-gray-100 " + (props.open ?"":"cursor-pointer") ;
+
   return (
-    <div className='my-7 w-[65%] mx-4'>
+    <div className='animate-fade-in'>
         {
           props.open ?
           (
-              <div className={postclasses}>
+              <div className='bg-[#1a1a1b] border border-[#343536] rounded-xl p-4 hover:border-[#d7dadc33] transition-all duration-200'>
                 <Upperbody/>
                 <PostStructure/>
                 <Lowerbody/>
-                <CommentForm rootID={ID} parentID={ID} subreddit={props.subreddit} onSubmit={handleCommentSubmit}/>
-                <CommentListing rootID={ID} parentID={ID} subreddit={props.subreddit} newCommentAdded={newCommentAdded}/>
+                <div className='mt-4 pt-4 border-t border-[#343536]'>
+                  <CommentForm rootID={ID} parentID={ID} subreddit={props.subreddit} onSubmit={handleCommentSubmit}/>
+                  <CommentListing rootID={ID} parentID={ID} subreddit={props.subreddit} newCommentAdded={newCommentAdded}/>
+                </div>
               </div>  
-          ):
-          (
-              <div>
+          ):(
+              <div className='bg-[#1a1a1b] border border-[#343536] rounded-xl p-4 hover:border-[#d7dadc33] transition-all duration-200 cursor-pointer'>
                   <Upperbody/>
-                  <Link to={{pathname:`/posts/${props._id}`,state:{postID:props._id}}} className={postclasses}>
+                  <Link to={{pathname:`/posts/${props._id}`,state:{postID:props._id}}} className='block'>
                       <PostStructure/>
                   </Link>
                   <Lowerbody/>

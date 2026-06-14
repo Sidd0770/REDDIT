@@ -5,7 +5,8 @@ const{
     JOIN_SUBREDDIT,
     CREATE_SUBREDDIT,
     CHECK_MEMBER,
-    MOD_CONTROLS
+    MOD_CONTROLS,
+    GET_ALL_SUBREDDITS
 }=
 subredditEndpoints;
 
@@ -57,3 +58,15 @@ export const ModControls =async(subreddit)=>{
         throw error;
     }
 }
+
+export const getAllSubreddits = async () => {
+    try {
+        const response = await axios.get(GET_ALL_SUBREDDITS, {
+            withCredentials: true
+        });
+        return response.data.data;
+    } catch (error) {
+        console.log("error in fetching all subreddits", error);
+        throw error;
+    }
+};

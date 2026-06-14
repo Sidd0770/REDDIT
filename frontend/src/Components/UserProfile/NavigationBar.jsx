@@ -49,11 +49,13 @@ const NavigationBar = () => {
         </div>
         
         
+        <div className='flex flex-col gap-4 pb-8 pr-1 mt-4'>
         {
         posts.map((post)=>(
             <Post key={post._id} {...post} />
         ))
         }
+        </div>
 
 
     </div>

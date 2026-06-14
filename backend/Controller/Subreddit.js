@@ -125,11 +125,28 @@ export const ModControls=async (req,res)=>{
             isModerator:isModerator ? true : false,
             message:isModerator ? "User is a moderator of the subreddit" : "User is not a moderator of the subreddit"
         })
-    }catch(error){
+} catch (error) {
         res.status(500).json({
-            success:false,
-            error:error.message,
-            message:"Error while checking moderator status"
-        })
+            success: false,
+            error: error.message,
+            message: "Error while checking moderator status"
+        });
     }
-}
+};
+
+export const getAllSubreddits = async (req, res) => {
+    try {
+        const subreddits = await Subreddit.find({}).sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            data: subreddits,
+            message: "Fetched all subreddits successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            message: "Error while fetching all subreddits"
+        });
+    }
+};

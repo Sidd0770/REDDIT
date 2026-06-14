@@ -1,5 +1,6 @@
 import Profile from "../Models/Profile.js";
 import Post from "../Models/Post.js";
+import Interest from "../Models/Interest.js";
 
 export const getProfile=async (req,res)=>{
     try {
@@ -135,22 +136,59 @@ export const UserFeed=async(req,res)=>{
     try{
         const {username}=req.query;
         //get all the subreddit user has joined
-        const SubredditJoined =await Profile.findOne(
+        const profile = await Profile.findOne(
             {username:username},
-            {subJoined:1}
-        )
+            {subJoined:1, userID:1}
+        );
 
         //now get all the post of these subreddits according to the timestamp
-        const posts =await Post.find({
+        const subscribedPosts = await Post.find({
             subreddit:{
-                $in:SubredditJoined.subJoined
+                $in:profile.subJoined
             },
-        })
-        .sort({createdAt:-1});
+        }).sort({createdAt:-1}).lean();
+
+        // fetch personalized recommendations
+        let recommendedPosts = [];
+        if (profile && profile.userID) {
+            const it = await Interest.findById(profile.userID).lean();
+            if (it) {
+                const topLikes = Object.entries(it.likes || {}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([topic])=>topic);
+                const topFreq  = Object.entries(it.frequent || {}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([topic])=>topic);
+                const explore  = (it.suggestions || []).slice(0,3);
+
+                recommendedPosts = await Post.aggregate([
+                    { $match:{ topics:{ $in:[ ...topLikes, ...topFreq, ...explore ] } } },
+                    { $addFields:{ 
+                        score:{
+                            $cond:[ { $in:[ '$topics', topLikes ] }, 3,
+                            { $cond:[ { $in:[ '$topics', topFreq ] }, 2,
+                                { $cond:[ { $in:[ '$topics', explore ] }, 1, 0 ] } ]
+                            }]
+                    }}},
+                    { $sort:{ score:-1, createdAt:-1 } },
+                    { $limit:15 }
+                ]);
+            }
+        }
+
+        // Combine and deduplicate
+        const mixedPostsMap = new Map();
+        for (let post of subscribedPosts) {
+            mixedPostsMap.set(post._id.toString(), post);
+        }
+        for (let post of recommendedPosts) {
+            if (!mixedPostsMap.has(post._id.toString())) {
+                mixedPostsMap.set(post._id.toString(), post);
+            }
+        }
+        
+        // Sort the combined list by newest first
+        const finalPosts = Array.from(mixedPostsMap.values()).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         res.status(200).json({
             success:true,
-            data:posts,
+            data:finalPosts,
             message:"User Feed fetched successfully"
         });
         
@@ -159,7 +197,7 @@ export const UserFeed=async(req,res)=>{
         res.status(500).json({
             success: false,
             error: 'Server error.',
-            details: error.message // Keep this for development, consider removing/logging in production
+            details: error.message
         });
     }
 }

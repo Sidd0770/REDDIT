@@ -48,35 +48,52 @@ const Subreddit = () => {
   
 
   return (
-    <div className=''>
+    <div>
       
-      <div className='w-full h-[8rem] rounded-t-lg bg-amber-400'></div>
-      <div className=' relative flex flex-row h-[3rem] rounded-b-lg w-full'>
-          <div>
-            <div className='absolute flex rounded-full -top-14 left-4 bg-black h-[6rem] w-[6rem]  '></div>
-            <div className='absolute left-26 top-[10%] text-3xl'>              
-                r/{subreddit}        
-            </div>
+      {/* Banner */}
+      <div className='w-full h-[8rem] rounded-t-xl bg-gradient-to-r from-[#ff4500] to-[#ff8717]'></div>
 
-            <div className='flex  font-medium text-2xl items-center absolute right-40 top-2 m-1 '>
-                <div className='flex p-2 mx-10 border-2 rounded-2xl items-center border-black hover:scale-105 hover:bg-amber-100'>  
-                  <FontAwesomeIcon   icon={faPlus} />
-                  <div className='mx-2 '  onClick={createPostFunction}>Create</div>
-                </div >
+      {/* Subreddit Info Bar */}
+      <div className='relative flex items-end px-4 pb-3 pt-4 bg-[#1a1a1b] rounded-b-xl border border-t-0 border-[#343536]'>
+          
+          {/* Avatar */}
+          <div className='absolute -top-8 left-5 w-[72px] h-[72px] rounded-full bg-[#0e1113] border-4 border-[#1a1a1b] flex items-center justify-center'>
+            <span className='text-2xl font-bold text-[#ff4500]'>{subreddit?.charAt(0)?.toUpperCase()}</span>
+          </div>
 
-                <button className='mx-2 hover:scale-105 bg-blue-200 px-3 py-1 rounded-2xl hover:bg-blue-300'
-                  onClick={()=>Join(subreddit)}
-                  >
-                  {join ? "Joined":"Join"}  
-                  </button>
-                <div className='mx-4 hover:scale-105'>
-                  <FontAwesomeIcon icon={faBars} />
-                </div>
-            </div>
-          </div>  
+          {/* Name */}
+          <div className='ml-[88px] mr-8'>
+            <h1 className='text-xl font-bold text-[#d7dadc]'>r/{subreddit}</h1>
+          </div>
+
+          {/* Actions */}
+          <div className='flex items-center gap-3 ml-auto'>
+              <button className='flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#343536] text-[#d7dadc] text-sm font-medium hover:bg-[#272729] transition-colors duration-200'
+                      onClick={createPostFunction}>
+                <FontAwesomeIcon icon={faPlus} className='text-xs' />
+                Create
+              </button>
+
+              <button className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
+                join 
+                  ? 'bg-[#272729] text-[#d7dadc] border border-[#343536] hover:bg-[#343536]' 
+                  : 'bg-[#ff4500] text-white hover:bg-[#e03d00]'
+              }`}
+                onClick={()=>Join(subreddit)}
+                >
+                {join ? "Joined":"Join"}  
+                </button>
+
+              <button className='p-2 rounded-full text-[#818384] hover:bg-[#272729] hover:text-[#d7dadc] transition-colors duration-200'>
+                <FontAwesomeIcon icon={faBars} />
+              </button>
+          </div>
       </div>
 
-      <PostListing subreddit={subreddit}/>
+      {/* Posts */}
+      <div className='mt-4'>
+        <PostListing subreddit={subreddit}/>
+      </div>
 
       </div>        
     

@@ -39,5 +39,6 @@ export const subredditEndpoints={
     CREATE_SUBREDDIT:BASE_URL+"/subreddit/createSubreddit",
     JOIN_SUBREDDIT:BASE_URL+"/subreddit/joinSubreddit",
     CHECK_MEMBER:BASE_URL+"/subreddit/checkMember",
-    MOD_CONTROLS:BASE_URL+"/subreddit/ModControls"
+    MOD_CONTROLS:BASE_URL+"/subreddit/ModControls",
+    GET_ALL_SUBREDDITS:BASE_URL+"/subreddit/getAllSubreddits"
 }

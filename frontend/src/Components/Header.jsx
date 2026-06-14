@@ -84,15 +84,15 @@ const Header = ({setlogin}) => {
   }
 
   return (
-    <div className='flex justify-between w-[99vw] p-3 relative'>
-        <Link to={'/'} className='mx-4'>
-            <img src={logo} className='h-10 ' alt='homepage'></img>
-            
+    <div className='sticky top-0 z-50 flex justify-between items-center w-full px-5 py-2 bg-[#1a1a1b] border-b border-[#343536]'>
+        <Link to="/" className='flex items-center gap-2'>
+            <span className='text-xl font-bold text-[#ff4500] tracking-wide'>Content Recommendation</span>
         </Link>
-        <form onSubmit={SearchFunction}>
-          <div className='flex items-center bg-gray-500 rounded-3xl'>
-            <FontAwesomeIcon className='m-4' icon={faMagnifyingGlass} />
-            <input type='text' className=' h-8 w-100   text-white focus:outline-none'
+
+        <form onSubmit={SearchFunction} className='flex-1 max-w-[560px] mx-6'>
+          <div className='flex items-center bg-[#272729] rounded-full border border-[#343536] hover:border-[#d7dadc33] hover:bg-[#2a2a2c] transition-all duration-200 focus-within:border-[#d7dadc66] focus-within:bg-[#1a1a1b]'>
+            <FontAwesomeIcon className='ml-4 text-[#818384] text-sm' icon={faMagnifyingGlass} />
+            <input type='text' className='flex-1 h-10 px-3 bg-transparent text-[#d7dadc] text-sm placeholder-[#818384] focus:outline-none'
               placeholder='Search Reddit'
               value={search}
               onChange={(e)=>setSearch(e.target.value)}
@@ -102,45 +102,46 @@ const Header = ({setlogin}) => {
         </form>
 
         {/* before sign up page */}
-        {/* <Button></Button> */}
 
-        <div className='flex justify-between items-center '>
+        <div className='flex items-center gap-1'>
             {
               isLogin ?(
                 <>
-                  <button className='justify-end mx-4'><FontAwesomeIcon icon={faComment} /></button>
-                  <button className='flex border-2 p-2 rounded-xl hover:bg-gray-300'>
-                    <div className='items-center'>
-                      <FontAwesomeIcon  icon={faPlus} />
-                    </div>
-                    <div className='mx-2' onClick={()=> createPostFunction()}>Create</div>
+                  <button className='p-2 rounded-full text-[#d7dadc] hover:bg-[#272729] transition-colors duration-200'>
+                    <FontAwesomeIcon icon={faComment} className='text-lg' />
                   </button>
 
-                  <button className='mx-4 flex items-center'>
-                    <FontAwesomeIcon icon={faBell} />
+                  <button className='flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#343536] text-[#d7dadc] hover:bg-[#272729] transition-colors duration-200'
+                          onClick={()=> createPostFunction()}>
+                    <FontAwesomeIcon icon={faPlus} className='text-sm' />
+                    <span className='text-sm font-medium hidden sm:inline'>Create</span>
+                  </button>
+
+                  <button className='p-2 rounded-full text-[#d7dadc] hover:bg-[#272729] transition-colors duration-200'>
+                    <FontAwesomeIcon icon={faBell} className='text-lg' />
                   </button>
 
                   {/* username */}
-                  <button onClick={toggleUserDropDown} ref={userDropDownRef} className='w-7 h-7 rounded-full '>
-                    <div ><FontAwesomeIcon icon={faUser} /></div>
-                    {/* <img src={avatar} className='h-10 w-10 rounded-2xl'></img> */}
+                  <button onClick={toggleUserDropDown} ref={userDropDownRef} className='w-8 h-8 rounded-full bg-[#272729] flex items-center justify-center text-[#d7dadc] hover:bg-[#343536] transition-colors duration-200 ml-1'>
+                    <FontAwesomeIcon icon={faUser} className='text-sm' />
                   </button>
                   
                   {/* user dropdown */}
                   {
                   userDropDownVisible &&
-                  <div ref={userDropDownRef} className='flex flex-col items-center justify-center p-1 absolute right-0 border-1 bg-black border-gray-700 top-11 rounded-xl w-35'>
+                  <div ref={userDropDownRef} className='flex flex-col p-2 absolute right-4 bg-[#1a1a1b] border border-[#343536] top-[52px] rounded-xl w-48 shadow-xl shadow-black/40'>
                     {
-                      <div >
-                        <button className='flex justify-center items-center text-white m-1 hover:cursor-pointer'
+                      <div>
+                        <button className='flex items-center w-full px-3 py-2 text-[#d7dadc] rounded-lg hover:bg-[#272729] transition-colors duration-200 text-sm font-medium'
                                 onClick={()=>UserPage()}
                         >
-                            {person}
+                          <FontAwesomeIcon icon={faUser} className='mr-3 text-[#818384]' />
+                          {person}
                         </button>
-                    <button className="flex justify-center text-sm hover:cursor-pointer text-white overflow-hidden p-1"
+                    <button className="flex items-center w-full px-3 py-2 text-[#d7dadc] rounded-lg hover:bg-[#272729] transition-colors duration-200 text-sm"
                             onClick={()=>logout()}
                       >
-                      <FontAwesomeIcon className="w-6 h-6 mr-1 items-center" icon={faRightToBracket}            
+                      <FontAwesomeIcon className="mr-3 text-[#818384]" icon={faRightToBracket}            
                       />
                       Log Out
                     </button>
@@ -153,22 +154,16 @@ const Header = ({setlogin}) => {
                 </>
               ):
               (<>
-                  <Button onClick={loginpage} className=''>Login In</Button>
+                  <button onClick={loginpage}
+                    className='px-5 py-2 bg-[#ff4500] hover:bg-[#e03d00] text-white font-semibold text-sm rounded-full transition-colors duration-200 shadow-lg shadow-[#ff4500]/20'>
+                    Log In
+                  </button>
               </>)
               
             }
 
         </div>
     </div>
-  )
-}
-
-function Button(props){
-  const defaultStyle="border rounded-full p-2 bg-[#E64F17] text-white font-bold ";
-  const afterStyle="hover:bg-amber-700";
-  return(
-    
-    <button {...props} className={defaultStyle + props.className + afterStyle } />
   )
 }
 

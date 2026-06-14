@@ -4,6 +4,7 @@ import { useEffect,useState } from 'react';
 import {getSubreddit} from '../../services/operations/profileAPI.js';
 import { ButtonStyle } from './ButtonStyle.jsx';
 import { Link } from 'react-router-dom';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
 
 const Community = () => {
   const [subreddit,setSubreddit]=useState([]);
@@ -19,11 +20,12 @@ const Community = () => {
   },[]);
 
   return (
-    <div>
+    <div className='pt-2'>
+      <h3 className='px-4 py-2 text-xs font-semibold text-[#818384] uppercase tracking-wider'>Communities</h3>
       {
         subreddit.map((sub)=>(
-          <Link to={`/r/${sub}`}>
-            <ButtonStyle name={`r/${sub}`} />
+          <Link to={`/r/${sub}`} key={sub}>
+            <ButtonStyle name={`r/${sub}`} icon={faUsers} />
           </Link>
         ))
       }

@@ -57,13 +57,16 @@ export const createPost =async(req,res)=>{
         console.log("New Post Created",newPost);
 
         //increases the interaction count for comments under the post
-        if(req.user ){
-            await Interactions.create({
-                userId:req.user.id,
-                postId:rootID,
-                type:"view",
-                
-            });
+        if(req.user && rootID !== null){
+            const rootPost = await Post.findById(rootID);
+            if(rootPost) {
+                await Interactions.create({
+                    userId:req.user.id,
+                    postId:rootID,
+                    type:"comment",
+                    topics:rootPost.topics
+                });
+            }
         }
         console.log("Interactions created for the post");
 

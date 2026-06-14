@@ -21,7 +21,7 @@ const SearchPage = () => {
 
   console.log(keyword);
   return (
-    <div>
+    <div className='flex flex-col gap-4 overflow-y-auto h-[calc(100vh-76px)] pb-8 pr-1'>
       {posts.map(post=>(
           <Post key={post._id} {...post}/>
         ))}
